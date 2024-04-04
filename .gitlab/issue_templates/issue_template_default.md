@@ -4,13 +4,14 @@
 
 
 # Links
-## Code repository
 
-
-## Documentation
-
-
-## SGA3 Collab page
+|        | URL |
+| ------ | ------ |
+|  Code   |        |
+|  Download page      |        |
+|  Documentation      |        |
+|  Collab Page      |        |
+|  KG page      |        |
 
 
 # Description of the tool, short Description, 2-3 sentences
