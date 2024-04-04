@@ -28,7 +28,9 @@
 :x: = To do / not started
 :bangbang: = Problem/impossible
 
-|------------|------------|
-| CWL | :construction: :white_check_mark: :x: :bangbang: |
-| CLI | :construction: :white_check_mark: :x: :bangbang: |
-|------------|------------|
+| Feature | Status |
+| ------ | ------ |
+| CWL       | :construction: :white_check_mark: :x: :bangbang:       |
+| CLI       | :construction: :white_check_mark: :x: :bangbang:       |
+
+# Contacts List of contact mails, developers custodians ...
