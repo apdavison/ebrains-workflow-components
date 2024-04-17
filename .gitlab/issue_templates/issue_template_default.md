@@ -12,6 +12,7 @@
 |  Documentation      |        |
 |  Collab Page      |        |
 |  KG page      |        |
+|  EBRAINS page      |        |
 
 
 # Description of the tool, short Description, 2-3 sentences
