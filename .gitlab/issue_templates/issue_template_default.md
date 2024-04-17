@@ -32,7 +32,10 @@
 
 | Feature | Status |
 | ------ | ------ |
-| CWL       | :construction: :white_check_mark: :x: :bangbang:       |
-| CLI       | :construction: :white_check_mark: :x: :bangbang:       |
+| CWL       | :x:       |
+| CLI       | :x:  |
 
 # Contacts List of contact mails, developers custodians ...
+| Contacts |
+| ------ |
+| |
