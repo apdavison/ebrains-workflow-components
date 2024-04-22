@@ -33,17 +33,13 @@ CLI.add_argument("--ljp", nargs='?', type=float,
 CLI.add_argument("--protocol_name", nargs='?', type=str, required=True,
                  help='name of the experimental protocol')
 
-def extract_features(input_file_current=PosixPath('B95_Ch0_IDRest_107.ibw'),
-                     input_file_voltage=PosixPath('B95_Ch3_IDRest_107.ibw'),
-                     output_file=PosixPath('test.json'),
-                     features='Spikecount,mean_frequency,ISI_CV,AP1_amp,AP_width',
-                     current_unit='pA',
-                     voltage_unit='mV',
-                     time_unit='s',
-                     time_step=0.00025,
-                     ljp=14.0,
-                     protocol_name='IDRest')
+def extract_features(input_file_current, input_file_voltage,
+                     output_file, features, current_unit,
+                     voltage_unit, time_unit, time_step,
+                     ljp, protocol_name):
+    pass
+
 
 if __name__ == '__main__':
     args, unknown = CLI.parse_known_args()
-    print(args, unknown)
+    extract_features(**vars(args))
