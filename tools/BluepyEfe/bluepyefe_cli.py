@@ -7,6 +7,7 @@ import argparse
 from pathlib import Path
 
 from bluepyefe.cell import Cell
+from bluepyefe.tools import dict_to_json
 
 
 # CLI parsing
@@ -68,7 +69,7 @@ def extract_features(input_file_current, input_file_voltage,
     cell.extract_efeatures(protocol_name=protocol_name,
                            efeatures=features)
 
-    print(cell.recordings[0].efeatures)
+    dict_to_json(cell.recordings[0].efeatures, output_file)
 
 
 if __name__ == '__main__':
