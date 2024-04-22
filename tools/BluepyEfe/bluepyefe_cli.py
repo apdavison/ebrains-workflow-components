@@ -11,6 +11,10 @@ from bluepyefe.cell import Cell
 
 # CLI parsing
 
+def parse_features(value):
+    return value.split(",")
+
+
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--input_file_current", nargs='?', type=str, required=True,
                  help="path with current measurement of the recording")
@@ -18,8 +22,8 @@ CLI.add_argument("--input_file_voltage", nargs='?', type=str, required=True,
                  help="path with voltage measurement of the recording")
 CLI.add_argument("--output_file", nargs='?', type=Path, required=True,
                  help="save file with extracted features to path")
-CLI.add_argument("--features", nargs='?', type=str, required=True,
-                 default=None, help="features to extract, separated by comma")
+CLI.add_argument("--features", nargs='?', type=parse_features, required=True,
+                 help="features to extract, separated by comma")
 CLI.add_argument("--current_unit", nargs='?', type=str,
                  default='pA',
                  help='units of the current measurement')
