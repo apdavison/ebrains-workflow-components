@@ -12,9 +12,9 @@ from bluepyefe.cell import Cell
 # CLI parsing
 
 CLI = argparse.ArgumentParser()
-CLI.add_argument("--input_file_current", nargs='?', type=Path, required=True,
+CLI.add_argument("--input_file_current", nargs='?', type=str, required=True,
                  help="path with current measurement of the recording")
-CLI.add_argument("--input_file_voltage", nargs='?', type=Path, required=True,
+CLI.add_argument("--input_file_voltage", nargs='?', type=str, required=True,
                  help="path with voltage measurement of the recording")
 CLI.add_argument("--output_file", nargs='?', type=Path, required=True,
                  help="save file with extracted features to path")
