@@ -8,8 +8,9 @@ RUN mkdir -p /opt/spack-environment && \
 set -o noclobber \
 &&  (echo spack: \
 &&   echo '  specs:' \
-&&   echo '  - py-efel@5.2.0' \
-&&   echo '  - py-neo@0.12.0' \
+&&   echo '  - py-bluepyefe@2.3.6' \
+&&   echo '  - py-efel' \
+&&   echo '  - py-neo' \
 &&   echo '  - py-numpy' \
 &&   echo '  - py-scipy' \
 &&   echo '  - py-matplotlib' \

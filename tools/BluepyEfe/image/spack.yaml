@@ -1,8 +1,8 @@
 spack:
   specs:
   - py-bluepyefe@2.3.6
-  - py-efel@4.0.4
-  - py-neo@0.13.0
+  - py-efel
+  - py-neo
   - py-numpy
   - py-scipy
   - py-matplotlib
