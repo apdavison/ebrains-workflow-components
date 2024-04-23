@@ -52,11 +52,10 @@ inputs:
       position: 5
       prefix: --protocol_name
 outputs:
-#  output_statistics:
-#    type: File
-#    outputBinding:
-#      # glob: "*.json"
-#      glob: "$(inputs.output_file)"
+  output_statistics:
+    type: File
+    outputBinding:
+      glob: "$(inputs.output_file)"
   output_stdout:
     type: stdout
   output_stderr:
