@@ -1,28 +1,16 @@
 # Build stage with Spack pre-installed and ready to be used
 FROM spack/ubuntu-jammy:develop as builder
 
-
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)
-RUN mkdir -p /opt/spack-environment && \
-set -o noclobber \
-&&  (echo spack: \
-&&   echo '  specs:' \
-&&   echo '  - py-efel@5.2.0' \
-&&   echo '  - py-neo@0.12.0' \
-&&   echo '  - py-numpy' \
-&&   echo '  - py-scipy' \
-&&   echo '  - py-matplotlib' \
-&&   echo '  - py-h5py' \
-&&   echo '  - py-igor2' \
-&&   echo '  concretizer:' \
-&&   echo '    unify: true' \
-&&   echo '  config:' \
-&&   echo '    install_tree: /opt/software' \
-&&   echo '  view: /opt/views/view') > /opt/spack-environment/spack.yaml
+COPY ./spack.yaml /opt/spack-environment/spack.yaml
+
+# Get the additional EBRAINS package definitions
+# TODO: here we get the main branch, we may wish to use a release tag
+RUN git clone https://gitlab.ebrains.eu/ri/tech-hub/platform/esd/ebrains-spack-builds.git /opt/ebrains-spack-builds
 
 # Install the software, remove unnecessary deps
-RUN cd /opt/spack-environment && spack env activate . && spack install --fail-fast && spack gc -y
+RUN cd /opt/spack-environment && spack repo add /opt/ebrains-spack-builds && spack env activate . && spack install --fail-fast && spack gc -y
 
 # Strip all the binaries
 RUN find -L /opt/views/view/* -type f -exec readlink -f '{}' \; | \
@@ -56,4 +44,3 @@ RUN { \
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/bin/bash" ]
-
