@@ -7,3 +7,7 @@
 *.ibw 
 # result files
 *.json 
+
+# stdout and stderr files
+**/o.txt
+**/e.txt
