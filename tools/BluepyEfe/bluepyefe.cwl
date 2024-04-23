@@ -2,7 +2,7 @@
 cwlVersion: v1.2
 
 class: CommandLineTool
-baseCommand: python bluepyefe-cli.py
+baseCommand: bluepyefe_cli.py
 
 stdout: o.txt
 stderr: e.txt
@@ -11,12 +11,12 @@ hints:
   DockerRequirement:
     dockerImageId: docker-registry.ebrains.eu/workflow-components/bluepyefe
 
-doc: 
+doc:
      - "Extract batches of electrical features of experimental or simulated electrophysiology recordings using BluePyEfe and the eFel library."
      - "Functionality is provided via a command line interface to BluePyEfe."
 
 label: bluepyefe-extract-electrical-neuron-features
-    
+
 # requirements:
 #  - class: DockerRequirement
 #    dockerOutputDirectory: "/home/denker/tmpdoc"  
@@ -35,7 +35,7 @@ inputs:
     label: "Input file for the electrical voltage."
     inputBinding:
       position: 2
-      prefix: --input_voltage_current
+      prefix: --input_file_voltage
   output_file:
     type: string
     inputBinding:
