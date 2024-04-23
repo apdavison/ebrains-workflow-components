@@ -27,6 +27,8 @@ RUN cd /opt/spack-environment && \
 # Bare OS image to run the installed executables
 FROM ubuntu:22.04
 
+RUN apt-get update && apt-get install -y gfortran
+
 COPY --from=builder /opt/spack-environment /opt/spack-environment
 COPY --from=builder /opt/software /opt/software
 
@@ -36,13 +38,16 @@ COPY --from=builder /opt/views /opt/views
 RUN { \
       echo '#!/bin/sh' \
       && echo '.' /opt/spack-environment/activate.sh \
+      && echo 'PATH="/usr/src/app:$PATH"' \
       && echo 'exec "$@"'; \
     } > /entrypoint.sh \
 && chmod a+x /entrypoint.sh \
 && ln -s /opt/views/view /opt/view
 
+WORKDIR /usr/src/app
 COPY bluepyefe_cli.py bluepyefe_cli.py
 RUN chmod +x bluepyefe_cli.py
+ENV PATH="/usr/src/app:$PATH"
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/bin/bash" ]
