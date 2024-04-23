@@ -39,7 +39,7 @@ inputs:
       - type: enum
         symbols:
           - NWBIO
-          - NIXIO
+          - NixIO
     label: "Format of the output file (optional). If not provided, will be inferred from the output file suffix"
     inputBinding:
       prefix: --output_format
@@ -66,9 +66,11 @@ inputs:
           - filtfilt
           - lfilter
           - sosfiltfilt
-  include:
-    type: str?
-    label: "A pseudo-Python expression that indicates which signals to process with the filter."
+    inputBinding:
+      prefix: --filter_function
+#  include:
+#    type: string?
+#    label: "A pseudo-Python expression that indicates which signals to process with the filter."
 outputs:
   output_file:
     type: File

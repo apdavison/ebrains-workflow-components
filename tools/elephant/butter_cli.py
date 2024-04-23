@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 from pathlib import Path
 from datetime import datetime
@@ -43,14 +45,22 @@ CLI.add_argument("--lowpass_frequency", nargs='?', type=quantity_or_float,
 CLI.add_argument("--order", nargs='?', type=int, required=True,
                  help="Filter order")
 CLI.add_argument("--filter_function", nargs='?', type=str, required=True,
-                 help="Filter order")
+                 help="Filter function")
 
 
 def load_data(input_file, input_format=None):
     if not input_format:
-        io = neo.get_io(input_file)
+        candidate_io = neo.list_candidate_ios(input_file)
+        if candidate_io:
+            io_class = candidate_io[0]
+            flags = ['ro'] if io_class.__qualname__ == 'NixIO' else []
+            io = io_class(input_file, *flags)
+        else:
+            print(candidate_io)
+            raise ValueError("Please specify the input format.")
     else:
-        io = getattr(neo.io, input_format)(input_file)
+        flags = ['ro'] if input_format == 'NixIO' else []
+        io = getattr(neo.io, input_format)(input_file, *flags)
 
     return io.read_block()
 
