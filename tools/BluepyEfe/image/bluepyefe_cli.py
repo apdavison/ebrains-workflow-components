@@ -1,5 +1,6 @@
+#!/usr/bin/env python
 """
-Detect trigger times (i.e., state transition / local wavefronts onsets) 
+Detect trigger times (i.e., state transition / local wavefronts onsets)
 by finding crossing of a set phase-value in the channel signals.
 """
 
