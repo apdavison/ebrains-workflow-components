@@ -1,0 +1,12 @@
+FROM python:3.11-alpine
+
+WORKDIR /usr/src/app
+
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir bluepyefe py-efel neo scipy matplotlib h5py igor2
+
+COPY bluepyefe_cli.py bluepyefe_cli.py
+RUN chmod +x bluepyefe_cli.py
+
+ENV PATH="/usr/src/app:$PATH"
+
+CMD [ "/bin/sh" ]
