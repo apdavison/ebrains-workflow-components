@@ -11,6 +11,12 @@ hints:
   DockerRequirement:
     dockerImageId: docker-registry.ebrains.eu/workflow-components/bluepyefe
 
+doc: 
+     - "Extract batches of electrical features of experimental or simulated electrophysiology recordings using BluePyEfe and the eFel library."
+     - "Functionality is provided via a command line interface to BluePyEfe."
+
+label: bluepyefe-extract-electrical-neuron-features
+    
 # requirements:
 #  - class: DockerRequirement
 #    dockerOutputDirectory: "/home/denker/tmpdoc"  
@@ -20,11 +26,13 @@ hints:
 inputs:
   input_file_current:
     type: File
+    label: "Input file for the electrical current."
     inputBinding:
       position: 1
       prefix: --input_file_current
   input_file_voltage:
     type: File
+    label: "Input file for the electrical voltage."
     inputBinding:
       position: 2
       prefix: --input_voltage_current
@@ -44,11 +52,11 @@ inputs:
       position: 5
       prefix: --protocol_name
 outputs:
-  output_statistics:
-    type: File
-    outputBinding:
-      # glob: "*.json"
-      glob: "$(inputs.output_file)"
+#  output_statistics:
+#    type: File
+#    outputBinding:
+#      # glob: "*.json"
+#      glob: "$(inputs.output_file)"
   output_stdout:
     type: stdout
   output_stderr:
