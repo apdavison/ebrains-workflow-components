@@ -4,7 +4,7 @@ from cwltool.main import main
 from cwltool.context import RuntimeContext
 
 
-podman = RuntimeContext(podman=True)
+podman = RuntimeContext({"podman": True})
 
 
 # Function to invoke cwl workflow files
