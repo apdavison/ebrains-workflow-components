@@ -22,6 +22,21 @@ build_bluepyefe_image:
     - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
     - docker push docker-registry.ebrains.eu/workflow-components/bluepyefe
 
+build_elephant_image:
+  stage: build
+  rules:
+    - changes:
+      - tools/elephant/image/Dockerfile_pip
+      - tools/elephant/image/requirements.txt
+      - tools/elephant/image/butterworth_filter_cli.py
+  tags:
+    - shell-runner
+  script:
+    - cd tools/elephant/image
+    - docker build -f Dockerfile_pip -t docker-registry.ebrains.eu/workflow-components/elephant .
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
+    - docker push docker-registry.ebrains.eu/workflow-components/elephant
+
 test_bluepyefe_components:
   image: docker-registry.ebrains.eu/workflow-components/bluepyefe
   tags:
