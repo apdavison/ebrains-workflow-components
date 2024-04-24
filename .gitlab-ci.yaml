@@ -1,0 +1,27 @@
+workflow:                                                                  # New in GitLab 13.5
+  rules:                                                                   # Only/except are considered legacy 
+    - if: $CI_COMMIT_REF_NAME =~ /(main)|merge-requests/                   # Run pipeline on main and merge requests
+  
+stages:
+  - prepare
+  - test
+
+prepare_job:                                                             
+  tags:                                                                    # Apply runner
+    - my-runner                                                            # Replace 'my-runner' with the tag you use for your runner
+  stage: prepare
+  script:
+    - conda create -n env python=3.10 -y
+    - eval "$(conda shell.bash hook)"                                      # Activate conda properly
+    - conda activate env
+    - conda install -c conda-forge cwltool -y
+    - git checkout $CI_COMMIT_REF_NAME                                     # Checkout to the 'relevant' branch (current one)
+    
+test_job:
+  tags:                                                                    
+    - my-runner                                                            # Replace 'my-runner' with the tag you use for your runner
+  stage: test
+  script:
+    - eval "$(conda shell.bash hook)"                                     
+    - conda activate env                                                   # Make sure to use the same environment as the one created earlier
+    - python cwl_test.py                                                   # Python script to search for 'test' directories and './workflow directory
