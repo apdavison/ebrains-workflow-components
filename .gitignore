@@ -1,0 +1,13 @@
+# folders
+.venv
+.vscode
+
+# files
+# IGOR Pro Binary Wave Data format.
+*.ibw 
+# result files
+*.json 
+
+# stdout and stderr files
+**/o.txt
+**/e.txt

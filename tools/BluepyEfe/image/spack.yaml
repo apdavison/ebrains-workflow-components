@@ -1,0 +1,15 @@
+spack:
+  specs:
+  - py-bluepyefe@2.2.18
+  - py-efel@4.0.4
+  - py-neo@0.13.0
+  - py-numpy
+  - py-scipy
+  - py-matplotlib
+  - py-h5py
+  - py-igor2
+  concretizer:
+    unify: true
+  config:
+    install_tree: /opt/software
+  view: /opt/views/view
