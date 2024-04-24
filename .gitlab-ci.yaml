@@ -8,7 +8,7 @@ stages:
 
 prepare_job:                                                             
   tags:                                                                    # Apply runner
-    - my-runner                                                            # Replace 'my-runner' with the tag you use for your runner
+    - shell-runner                                                            # Replace 'my-runner' with the tag you use for your runner
   stage: prepare
   script:
     - conda create -n env python=3.10 -y
@@ -19,7 +19,7 @@ prepare_job:
     
 test_job:
   tags:                                                                    
-    - my-runner                                                            # Replace 'my-runner' with the tag you use for your runner
+    - shell-runner                                                            # Replace 'my-runner' with the tag you use for your runner
   stage: test
   script:
     - eval "$(conda shell.bash hook)"                                     
