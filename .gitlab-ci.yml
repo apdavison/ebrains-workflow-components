@@ -11,6 +11,7 @@ run_tests_job:
     - docker-runner
   stage: test
   script:
+    - podman pull docker-registry.ebrains.eu/workflow-components/bluepyefe
     - cd tools/BluepyEfe/test
     - /opt/env/bin/cwltool --podman ../extract_ephys_features.cwl extract_ephys_features.yaml
     #- /opt/env/bin/python cwl_test.py
