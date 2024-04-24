@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Extract electrophysiological features from single cell intracellular
 recordings.
