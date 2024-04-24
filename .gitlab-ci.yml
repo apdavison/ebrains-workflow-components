@@ -1,0 +1,24 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+stages:
+  - test
+
+test_bluepyefe_components:
+  image: docker-registry.ebrains.eu/workflow-components/bluepyefe
+  tags:
+    - docker-runner
+  stage: test
+  script:
+    - cd tools/BluepyEfe/test
+    - cwltool --no-container ../extract_ephys_features.cwl extract_ephys_features.yaml
+
+# test_elephant_components:
+#   image: docker-registry.ebrains.eu/workflow-components/elephant
+#   tags:
+#     - docker-runner
+#   stage: test
+#   script:
+#     - cd tools/elephant/test
+#     - cwltool --no-container ../butterworth_filter.cwl butterworth_filter.yaml
