@@ -1,0 +1,8 @@
+bluepyefe==2.3.18
+efel==5.6.7
+h5py==3.11.0
+igor2==0.5.6
+matplotlib==3.8.4
+neo==0.13.0
+numpy==1.26.4
+scipy==1.13.0

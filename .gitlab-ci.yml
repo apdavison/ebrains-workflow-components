@@ -1,9 +1,26 @@
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_JOB_STAGE == "test"
 
 stages:
+  - build
   - test
+
+build_bluepyefe_image:
+  stage: build
+  rules:
+    - changes:
+      - tools/BluepyEfe/image/Dockerfile_pip
+      - tools/BluepyEfe/image/requirements.txt
+      - tools/BluepyEfe/image/extract_ephys_features_cli.py
+  tags:
+    - shell-runner
+  script:
+    - cd tools/BluepyEfe/image
+    - docker build -f Dockerfile_pip -t docker-registry.ebrains.eu/workflow-components/bluepyefe .
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
+    - docker push docker-registry.ebrains.eu/workflow-components/bluepyefe
 
 test_bluepyefe_components:
   image: docker-registry.ebrains.eu/workflow-components/bluepyefe
