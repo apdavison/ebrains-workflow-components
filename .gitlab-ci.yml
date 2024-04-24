@@ -1,5 +1,5 @@
 workflow:                                                                  # New in GitLab 13.5
-  rules:                                                                   # Only/except are considered legacy 
+  rules:                                                                   # Only/except are considered legacy
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 stages:
@@ -11,11 +11,6 @@ run_tests_job:
     - docker-runner
   stage: test
   script:
-#    - sudo apt install python3-venv
-    #- pip install --upgrade pip
-    #- pip install virtualenv
-    #- python3 -m venv env
-    #- source env/bin/activate
     - cd tools/BluepyEfe/test
-    - /opt/env/bin/cwltool ../extract_ephys_features.cwl extract_ephys_features.yaml
+    - /opt/env/bin/cwltool --podman ../extract_ephys_features.cwl extract_ephys_features.yaml
     #- /opt/env/bin/python cwl_test.py
