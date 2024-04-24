@@ -40,7 +40,7 @@ CLI.add_argument("--highpass_frequency", nargs='?', type=quantity_or_float,
                  required=True,
                  help="High-pass frequency cutoff")
 CLI.add_argument("--lowpass_frequency", nargs='?', type=quantity_or_float,
-                 required=True,
+                 default=None,
                  help="Low-pass frequency cutoff")
 CLI.add_argument("--order", nargs='?', type=int, required=True,
                  help="Filter order")

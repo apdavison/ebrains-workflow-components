@@ -2,10 +2,10 @@
 cwlVersion: v1.2
 
 class: CommandLineTool
-baseCommand: butter_cli.py
+baseCommand: butterworth_filter_cli.py
 
-stdout: o.txt
-stderr: e.txt
+stdout: stdout.txt
+stderr: stderr.txt
 
 hints:
   DockerRequirement:
@@ -13,6 +13,7 @@ hints:
 
 doc:
      - "Butterworth filtering"
+     - "Detailed function documentation: https://elephant.readthedocs.io/en/latest/reference/_toctree/signal_processing/elephant.signal_processing.butter.html"
 
 label: elephant-butterworth-filter
 
@@ -55,19 +56,18 @@ inputs:
       prefix: --lowpass
   order:
     type: int?
-    label: "Order of the Butterworth filter. Default: 4"
+    label: "Order of the Butterworth filter. Typical value: 4"
     inputBinding:
       prefix: --order
   filter_function:
-    type:
-      - "null"
-      - type: enum
-        symbols:
-          - filtfilt
-          - lfilter
-          - sosfiltfilt
+    type: enum
+    symbols:
+      - filtfilt
+      - lfilter
+      - sosfiltfilt
     inputBinding:
       prefix: --filter_function
+    label: "Filter function used"
 #  include:
 #    type: string?
 #    label: "A pseudo-Python expression that indicates which signals to process with the filter."
