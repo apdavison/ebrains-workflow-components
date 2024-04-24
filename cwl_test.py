@@ -1,13 +1,17 @@
 import sys
 import os
 from cwltool.main import main
+from cwltool.context import RuntimeContext
+
+
+podman = RuntimeContext(podman=True)
 
 
 # Function to invoke cwl workflow files
 def invoke_workflow(cwl_file, input_file):
     try:
         # Invoke the cwl workflow files using cwltool API
-        result = main([cwl_file, input_file])
+        result = main([cwl_file, input_file], runtimeContext=podman)
         print(f'Successfully completed cwl workflow: {cwl_file} with input: {input_file}')
     except Exception as e:
         print(f'Error occurred while running cwl workflow: {cwl_file} with input: {input_file}')

@@ -6,7 +6,7 @@ stages:
   - test
 
 run_tests_job:
-  image: docker-registry.ebrains.eu/workflow-components/gitlab-runner
+  image: docker-registry.ebrains.eu/workflow-components/gitlab-runner:podman
   tags:
     - docker-runner
   stage: test
