@@ -1,3 +1,4 @@
+import sys
 import os
 from cwltool.main import main
 
@@ -6,14 +7,17 @@ from cwltool.main import main
 def invoke_workflow(cwl_file, input_file):
     try:
         # Invoke the cwl workflow files using cwltool API
-        main([cwl_file, input_file])
+        result = main([cwl_file, input_file])
         print(f'Successfully completed cwl workflow: {cwl_file} with input: {input_file}')
     except Exception as e:
         print(f'Error occurred while running cwl workflow: {cwl_file} with input: {input_file}')
         print(str(e))
+        result = 1
+    return result
 
 
 # Scanning all subdirectories of the folder "tools"
+result = 0
 for root, dirs, files in os.walk("tools"):
     if 'test' in dirs:
         test_dir = os.path.join(root, 'test')
@@ -22,4 +26,11 @@ for root, dirs, files in os.walk("tools"):
         # Invoke the cwl workflow files within that folder, assuming one-to-one correspondence between workflow files and input files
         for input_file in input_files:
             workflow_file = os.path.join(root, os.path.basename(os.path.splitext(input_file)[0])) + '.cwl'
-            invoke_workflow(workflow_file, input_file)
+            result += invoke_workflow(workflow_file, input_file)
+            # Fail fast
+            if result != 0:
+                sys.exit(result)
+
+# Fail slow
+#if result != 0:
+#    sys.exit(result)
