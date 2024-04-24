@@ -10,36 +10,27 @@ import neo.io
 from elephant.signal_processing import butter
 
 
-def str_or_none(arg):
-    if arg.lower() == "none":
-        return None
-    return arg
-
-
-def quantity_or_float(arg):
-    arg = str_or_none(arg)
+def quantity(arg):
     if not arg:
         return None
-    try:
-        value, unit = arg.split(" ")
-        return pq.Quantity(float(value), units=unit)
-    except TypeError:
-        return float(arg)
+    value, unit = arg.split(" ")
+    return pq.Quantity(float(value), units=unit)
 
 
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--input_file", nargs='?', type=Path, required=True,
                  help="path with file with the input data")
-CLI.add_argument("--input_format", nargs='?', type=str_or_none, required=True,
+CLI.add_argument("--input_format", nargs='?', type=str,
+                 default=None,
                  help="format of the input data")
 CLI.add_argument("--output_file", nargs='?', type=Path, required=True,
                  help="path to the file where to write data")
 CLI.add_argument("--output_format", nargs='?', type=str, required=True,
                  help="format of the output data")
-CLI.add_argument("--highpass_frequency", nargs='?', type=quantity_or_float,
-                 required=True,
+CLI.add_argument("--highpass_frequency", nargs='?', type=quantity,
+                 default=None,
                  help="High-pass frequency cutoff")
-CLI.add_argument("--lowpass_frequency", nargs='?', type=quantity_or_float,
+CLI.add_argument("--lowpass_frequency", nargs='?', type=quantity,
                  default=None,
                  help="Low-pass frequency cutoff")
 CLI.add_argument("--order", nargs='?', type=int, required=True,
