@@ -60,11 +60,12 @@ inputs:
     inputBinding:
       prefix: --order
   filter_function:
-    type: enum
-    symbols:
-      - filtfilt
-      - lfilter
-      - sosfiltfilt
+    type:
+      type: enum
+      symbols:
+        - filtfilt
+        - lfilter
+        - sosfiltfilt
     inputBinding:
       prefix: --filter_function
     label: "Filter function used"
