@@ -2,10 +2,10 @@
 cwlVersion: v1.2
 
 class: CommandLineTool
-baseCommand: bluepyefe_cli.py
+baseCommand: extract_ephys_features_cli.py
 
-stdout: o.txt
-stderr: e.txt
+stdout: stdout.txt
+stderr: stderr.txt
 
 hints:
   DockerRequirement:
@@ -14,13 +14,10 @@ hints:
 doc:
      - "Extract batches of electrical features of experimental or simulated electrophysiology recordings using BluePyEfe and the eFel library."
      - "Functionality is provided via a command line interface to BluePyEfe."
+     - "Detailed documentation: https://bluepyefe.readthedocs.io/en/latest/_autosummary/bluepyefe.extract.html"
 
-label: bluepyefe-extract-electrical-neuron-features
+label: bluepyefe-extract-ephys-features
 
-# requirements:
-#  - class: DockerRequirement
-#    dockerOutputDirectory: "/home/denker/tmpdoc"  
-#    dockerPull: docker-registry.ebrains.eu/workflow-components/bluepyefe
 
 # The inputs for this process.
 inputs:

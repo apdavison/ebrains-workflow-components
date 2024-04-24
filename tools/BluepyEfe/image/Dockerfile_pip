@@ -4,8 +4,8 @@ WORKDIR /usr/src/app
 
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir bluepyefe efel neo scipy matplotlib h5py igor2
 
-COPY bluepyefe_cli.py bluepyefe_cli.py
-RUN chmod +x bluepyefe_cli.py
+COPY extract_ephys_features_cli.py extract_ephys_features_cli.py
+RUN chmod +x extract_ephys_features_cli.py
 
 ENV PATH="/usr/src/app:$PATH"
 

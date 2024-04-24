@@ -45,8 +45,8 @@ RUN { \
 && ln -s /opt/views/view /opt/view
 
 WORKDIR /usr/src/app
-COPY bluepyefe_cli.py bluepyefe_cli.py
-RUN chmod +x bluepyefe_cli.py
+COPY extract_ephys_features_cli.py extract_ephys_features_cli.py
+RUN chmod +x extract_ephys_features_cli.py
 ENV PATH="/usr/src/app:$PATH"
 
 ENTRYPOINT [ "/entrypoint.sh" ]
