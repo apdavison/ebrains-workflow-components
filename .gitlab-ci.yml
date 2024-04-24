@@ -6,8 +6,9 @@ stages:
   - test
 
 run_tests_job:
+  image: docker-registry.ebrains.eu/workflow-components/gitlab-runner
   tags:
-    - shell-runner
+    - docker-runner
   stage: test
   script:
 #    - sudo apt install python3-venv
