@@ -30,10 +30,9 @@
 :x: = To do / not started
 :bangbang: = Problem/impossible
 
-| Feature | Status |
-| ------ | ------ |
-| CWL       | :x:       |
-| CLI       | :x:  |
+| Feature | CWL | CLI | Tested Version |
+| ------ | ------ | ------ | ------ |
+|        | :x: | :x: | :x: |
 
 # Contacts List of contact mails, developers custodians ...
 | Contacts |
