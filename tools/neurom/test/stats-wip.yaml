@@ -1,0 +1,7 @@
+input_file_or_dir: 
+    class: File
+    path: 'neuron_nmo/dendritica/CNG version/p20.CNG.swc'
+
+config_file:
+
+output_file: 'stats.json'

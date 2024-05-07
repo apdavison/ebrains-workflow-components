@@ -1,0 +1,5 @@
+input_file_or_dir: "test/neuron_nmo/dendritica/Source-Version/p20.hoc"
+
+config_file:
+
+output_file: "test/stats.json"
