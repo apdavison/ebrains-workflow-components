@@ -9,8 +9,7 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    #dockerImageId: docker-registry.ebrains.eu/workflow-components/neurom
-    dockerImageId: neurom
+    dockerImageId: docker-registry.ebrains.eu/workflow-components/neurom:esd
 
 doc:
      - "neurom stats: morphometric statistics extraction"
