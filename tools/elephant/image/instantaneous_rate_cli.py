@@ -99,7 +99,7 @@ def instantaneous_rate(input_file, input_format, output_file, output_format,
         border_correction=border_correction, pool_trials=pool_trials,
         pool_spike_trains=pool_spike_trains)
 
-    # Save filtered AnalogSignal
+    # Save filtered AnalogSignal to file
     save_data(estimated_rate, output_file, output_format)
 
 
