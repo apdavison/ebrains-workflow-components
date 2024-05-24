@@ -7,6 +7,9 @@ stages:
   - build
   - test
 
+
+### BLUEPYEFE ###
+##### Build image #####
 build_bluepyefe_image:
   stage: build
   rules:
@@ -22,6 +25,18 @@ build_bluepyefe_image:
     - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
     - docker push docker-registry.ebrains.eu/workflow-components/bluepyefe
 
+##### Test components #####
+test_bluepyefe_components:
+  image: docker-registry.ebrains.eu/workflow-components/bluepyefe
+  tags:
+    - docker-runner
+  stage: test
+  script:
+    - cd tools/BluepyEfe/test
+    - cwltool --no-container ../extract_ephys_features.cwl extract_ephys_features.yaml
+
+### BLUEPYEFE ###
+##### Build image #####
 build_elephant_image:
   stage: build
   rules:
@@ -37,14 +52,7 @@ build_elephant_image:
     - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
     - docker push docker-registry.ebrains.eu/workflow-components/elephant
 
-test_bluepyefe_components:
-  image: docker-registry.ebrains.eu/workflow-components/bluepyefe
-  tags:
-    - docker-runner
-  stage: test
-  script:
-    - cd tools/BluepyEfe/test
-    - cwltool --no-container ../extract_ephys_features.cwl extract_ephys_features.yaml
+##### Test components #####
 
 # test_elephant_components:
 #   image: docker-registry.ebrains.eu/workflow-components/elephant
@@ -54,3 +62,34 @@ test_bluepyefe_components:
 #   script:
 #     - cd tools/elephant/test
 #     - cwltool --no-container ../butterworth_filter.cwl butterworth_filter.yaml
+
+
+### NEUROM ###
+##### Build image #####
+build_neurom_image:
+  stage: build
+  rules:
+    - changes:
+      - tools/neurom/image/Dockerfile
+      - tools/neurom/image/requirements.txt
+  tags:
+    - shell-runner
+  script:
+    - cd tools/neurom/image
+    - docker build -f Dockerfile -t docker-registry.ebrains.eu/workflow-components/neurom:esd .
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
+    - docker push docker-registry.ebrains.eu/workflow-components/neurom:esd
+
+##### Test components #####
+test_neurom_components:
+  image: docker-registry.ebrains.eu/workflow-components/neurom:esd
+  tags:
+    - docker-runner
+  stage: test
+  script:
+    - cd tools/neurom/test
+    - cwltool --no-container ../stats.cwl stats.yaml
+    - cwltool --no-container ../check.cwl check.yaml
+    - cwltool --no-container ../viewer.cwl viewer.yaml
+
+
