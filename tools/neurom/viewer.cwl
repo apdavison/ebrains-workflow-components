@@ -53,7 +53,7 @@ label: neurom-check
       prefix: --backend
       position: 1
 
-  realistic-diameters:
+  realistic_diameters:
     type: boolean?
     label: "Scale diameters"
     inputBinding:
