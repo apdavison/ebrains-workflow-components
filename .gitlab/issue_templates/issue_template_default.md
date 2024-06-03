@@ -34,9 +34,9 @@
 :x: = To do / not started
 :bangbang: = Problem/impossible
 
-| Feature | CWL | CLI | Tested Version |
-| ------ | ------ | ------ | ------ |
-|        | :x: | :x: | :x: |
+| Feature | CWL [help](https://gitlab.ebrains.eu/workflows/components/-/wikis/Standards) | CLI | Tested Version | Docker URL [help](https://gitlab.ebrains.eu/workflows/components/-/wikis/Docker%20containers) | Comments |
+| ------ | ------ | ------ | ------ | ------ | ------ |
+|        | :x: | :x: | :x: | :x: | :x: |
 
 # Contacts List of contact mails, developers custodians ...
 | Contacts |
