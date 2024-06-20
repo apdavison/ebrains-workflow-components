@@ -1,0 +1,9 @@
+input_file_current: 
+  class: File
+  path: B95_Ch0_IDRest_107.ibw
+input_file_voltage:
+  class: File
+  path: B95_Ch3_IDRest_107.ibw
+output_file: output.json
+features: Spikecount,mean_frequency,ISI_CV,AP1_amp,AP_width
+protocol_name: IDRest
