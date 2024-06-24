@@ -2,7 +2,7 @@
 cwlVersion: v1.2
 
 class: Workflow
-baseCommand: fmriprep-test_workflow
+baseCommand: fmriprep_test_workflow
 
 # Testcase DOI: doi:10.18112/openneuro.ds000254.v1.0.0
 
