@@ -1,4 +1,6 @@
 spack:
+  specs:
+    - py-bluepyefe@2.2.18
   concretizer:
     unify: true
   config:

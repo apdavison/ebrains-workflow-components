@@ -2,7 +2,7 @@
 cwlVersion: v1.2
 
 class: CommandLineTool
-baseCommand: fmriprep-docker
+baseCommand: ["/bin/bash", "scipt.sh"]
 
 # Testcase DOI: doi:10.18112/openneuro.ds000254.v1.0.0
 
