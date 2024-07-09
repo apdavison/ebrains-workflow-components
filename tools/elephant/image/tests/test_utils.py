@@ -12,8 +12,17 @@ import quantities as pq
 import neo
 from elephant.spike_train_generation import StationaryPoissonProcess
 
-#TODO: import functions from utils
+# TODO: import functions from utils
+import sys
+import os
+# Get the current script directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Get the parent directory
+parent_dir = os.path.dirname(current_dir)
+# Add the parent directory to sys.path
+sys.path.append(parent_dir)
 
+from utils import load_data, select_data
 
 np.random.seed(1234)
 logging.basicConfig(level=logging.DEBUG)
@@ -262,7 +271,7 @@ class ElephantUtilsTestCase(unittest.TestCase):
                 if num_blocks > 1:
                     cls.blocks[file_stem].append(generate_block_2(start_time))
 
-                WRITE_FUNCTIONS[file_format](dest_file, cls.blocks[file_stem])
+                WRITE_FUNCTIONS[file_format](  dest_file, cls.blocks[file_stem])
 
     def test_files(self):
         # Check if data in NIX/NWB files agree with generated objects
@@ -291,6 +300,19 @@ class ElephantUtilsTestCase(unittest.TestCase):
                 if len(blocks) > 1:
                     self._check_block_2_data(blocks[1],
                                              nwb=(file_format == 'nwb'))
+
+    def test_load_data_load_nix(self):
+        blocks = load_data(self.data_files['nix_1'], input_format='NixIO')
+        assert blocks[0].name == "Data 1"
+
+    def test_select_data_analog_signal(self):
+        analog_signal = select_data(self.blocks['nix_1'], block_idx=0, segment_idx=0, analog_signal_idx=0)
+        assert isinstance(analog_signal, neo.AnalogSignal)
+
+    def test_select_data_spike_train(self):
+        spike_train = select_data(self.blocks['nix_1'], block_idx=0, segment_idx=0, spike_train_idx=0)
+        assert isinstance(spike_train, neo.SpikeTrain)
+
 
     @classmethod
     def tearDownClass(cls):
