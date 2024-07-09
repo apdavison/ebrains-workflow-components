@@ -11,3 +11,6 @@
 # stdout and stderr files
 **/o.txt
 **/e.txt
+
+# Python
+__pycache__
