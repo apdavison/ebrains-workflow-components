@@ -69,6 +69,24 @@ inputs:
     inputBinding:
       prefix: --filter_function
     label: "Filter function used"
+  block_idx:
+    type: int?
+    label: "Index of the block to process (default: 0)"
+    default: 0
+    inputBinding:
+      prefix: --block_idx
+  segment_idx:
+    type: int?
+    label: "Index of the segment to process (default: 0)"
+    default: 0
+    inputBinding:
+      prefix: --segment_idx
+  analogsignal_idx:
+    type: int?
+    label: "Index of the analog signal to process (default: None)"
+    default: 0
+    inputBinding:
+      prefix: --analogsignal_idx
 #  include:
 #    type: string?
 #    label: "A pseudo-Python expression that indicates which signals to process with the filter."
