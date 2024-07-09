@@ -2,12 +2,10 @@
 
 import argparse
 from pathlib import Path
-from datetime import datetime
 
 import quantities as pq
-import neo
-import neo.io
 from elephant.signal_processing import butter
+from utils import load_data, save_data, select_data
 
 
 def quantity(arg):
@@ -37,46 +35,22 @@ CLI.add_argument("--order", nargs='?', type=int, required=True,
                  help="Filter order")
 CLI.add_argument("--filter_function", nargs='?', type=str, required=True,
                  help="Filter function")
-
-
-def load_data(input_file, input_format=None):
-    if not input_format:
-        candidate_io = neo.list_candidate_ios(input_file)
-        if candidate_io:
-            io_class = candidate_io[0]
-            flags = ['ro'] if io_class.__qualname__ == 'NixIO' else []
-            io = io_class(input_file, *flags)
-        else:
-            print(candidate_io)
-            raise ValueError("Please specify the input format.")
-    else:
-        flags = ['ro'] if input_format == 'NixIO' else []
-        io = getattr(neo.io, input_format)(input_file, *flags)
-
-    return io.read_block()
-
-
-def save_data(data, output_file, output_format):
-    saved_block = neo.Block()
-    segment = neo.Segment()
-    segment.analogsignals.append(data)
-    saved_block.add(segment)
-
-    if output_format == "NixIO":
-        neo.NixIO(output_file, 'ow').write_block(saved_block)
-    elif output_format == "NWBIO":
-        saved_block.annotate(session_start_time=datetime.now())
-        neo.NWBIO(output_file, 'w').write_block(saved_block)
+CLI.add_argument("--block_idx", nargs='?', type=int, default=0,
+                 help="Index of the block to process (default: 0)")
+CLI.add_argument("--segment_idx", nargs='?', type=int, default=0,
+                 help="Index of the segment to process (default: 0)")
+CLI.add_argument("--analog_signal_idx", nargs='?', type=int, default=0,
+                 help="Index of the analog signal to process (default: 0)")
 
 
 def butterworth_filter(input_file, input_format, output_file, output_format,
                        highpass_frequency, lowpass_frequency, order,
-                       filter_function):
+                       filter_function, block_idx, segment_idx, analog_signal_idx):
 
     # Load AnalogSignal
-    block = load_data(input_file, input_format)
-    #TODO: advanced filtering function from CLI parameters
-    signal = block.segments[0].analogsignals[0]
+    blocks = load_data(input_file, input_format)
+    # TODO: advanced filtering function from CLI parameters
+    signal = select_data(blocks, block_idx=block_idx, segment_idx=segment_idx, analog_signal_idx=analog_signal_idx)
 
     # Filter using Elephant butter function
     signal_filtered = butter(signal=signal,
