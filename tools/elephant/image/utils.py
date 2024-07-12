@@ -1,3 +1,4 @@
+import quantities as pq
 import neo
 import datetime
 
@@ -27,7 +28,7 @@ def load_data(input_file, input_format=None):
     return io.read()
 
 
-def save_data(data, output_file, output_format):
+def save_data(data, output_file, output_format, action):
     saved_block = neo.Block()
     segment = neo.Segment()
     segment.analogsignals.append(data)
@@ -38,3 +39,10 @@ def save_data(data, output_file, output_format):
     elif output_format == "NWBIO":
         saved_block.annotate(session_start_time=datetime.now())
         neo.NWBIO(output_file, "w").write_block(saved_block)
+
+
+def quantity_arg(arg):
+    if not arg:
+        return None
+    value, unit = arg.split(" ")
+    return pq.Quantity(float(value), units=unit)
