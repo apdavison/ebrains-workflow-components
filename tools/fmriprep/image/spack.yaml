@@ -1,8 +1,8 @@
 spack:
   specs:
-    - py-bluepyefe@2.2.18
+    - py-fmriprep@2.0.4
   concretizer:
-    unify: true
+    unify: when_possible
   config:
     install_tree: /opt/software
   view: /opt/views/view

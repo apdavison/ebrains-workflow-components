@@ -12,14 +12,6 @@ RUN git clone https://gitlab.ebrains.eu/ri/tech-hub/platform/esd/ebrains-spack-b
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment && spack repo add /opt/ebrains-spack-builds && spack env activate . && spack install --fail-fast && spack gc -y
 
-# ENV EDITOR=nano
-# ENV SPACK_EDITOR=nano
-
-# RUN spack create --name py-fmriprep https://github.com/nipreps/fmriprep/archive/refs/tags/24.0.0.tar.gz
-# RUN spack repo add /opt/ebrains-spack-builds/packages/py-fmriprep
-# COPY ./py-fmriprep/package.py /opt/ebrains-spack-builds/packages/py-fmriprep
-
-# RUN cd /opt/spack-environment && spack repo add /opt/ebrains-spack-builds && spack env activate . && spack install --fail-fast && spack gc -y
 
 # Strip all the binaries
 RUN find -L /opt/views/* -type f -exec readlink -f '{}' \; | \
@@ -49,15 +41,23 @@ RUN { \
       && echo '.' /opt/spack-environment/activate.sh \
       && echo 'PATH="/usr/src/app:$PATH"' \
       && echo 'exec "$@"'; \
-    #   && spack create --name py-fmriprep https://github.com/nipreps/fmriprep/archive/refs/tags/24.0.0.tar.gz \
-    #   && spack repo add /opt/ebrains-spack-builds/packages/py-fmriprep \
     } > /entrypoint.sh \
 && chmod a+x /entrypoint.sh \
 && ln -s /opt/views/view /opt/view
 
-# COPY ./py-fmriprep/package.py /opt/ebrains-spack-builds/packages/py-fmriprep
-
 WORKDIR /usr/src/app
+
+# Copy test cases scripts downloader to the docker
+# COPY tools/fmriprep/test/openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh
+# COPY tools/fmriprep/test/openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh
+# RUN chmod +x openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh
+# RUN chmod +x openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh
+
+# # Run scipt downloader and download test cases
+# ##
+# RUN cd openneuro.ds000254.v1.0.0/ && ./ds000254-1.0.0.sh
+# RUN cd openneuro.ds004996.v1.0.1/ && ./ds004996-1.0.1.sh
+
 ENV PATH="/usr/src/app:$PATH"
 
 ENTRYPOINT [ "/entrypoint.sh" ]

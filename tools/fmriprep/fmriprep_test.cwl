@@ -2,34 +2,36 @@
 cwlVersion: v1.2
 
 class: CommandLineTool
-baseCommand: ["bash", "fmriprep_docker.sh"]
+baseCommand: ["bash", "fmriprep.sh"]
 
 # Testcase DOI: doi:10.18112/openneuro.ds000254.v1.0.0
-
-
 
 stdout: stdout.txt
 stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/fmriprep:pip
+    dockerImageId: docker-registry.ebrains.eu/workflow-components/fmriprep:esd
 
 doc:
      - "doc"
 
-label: fMRIPrep-docker-wrapper
+label: fMRIPrep
 
+# Create bash script to download data and run fMRIPrep
 requirements:
   InitialWorkDirRequirement:
     listing:
-      - entryname: fmriprep_docker.sh
+      - entryname: fmriprep.sh
         entry: |-
-          /bin/bash "$1" # Download dataset from dataset download script 
-          fmriprep-docker "$2" "$3" "$4" "$5"
+          /bin/echo "Start Downloading data ..."
+          /bin/bash "$1" # Download dataset from dataset download script
+          /bin/echo "... End Downloading data"
+          /bin/echo "Calling fMRIPrep ..."
+          fmriprep "$2" "$3" "$4" "$5"
 
 
-# The inputs for this process.
+# Inputs
 inputs:
   download_script:
     type: File
@@ -54,11 +56,9 @@ inputs:
     type: string
     inputBinding:
       position: 5
+
+# Outputs
 outputs:
-#  output_statistics:
-#    type: File
-#    outputBinding:
-#      glob: "$(inputs.output_file)"
   output_stdout:
     type: stdout
   output_stderr:
