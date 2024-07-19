@@ -46,3 +46,7 @@ def quantity_arg(arg):
         return None
     value, unit = arg.split(" ")
     return pq.Quantity(float(value), units=unit)
+
+
+def prepare_data(arg1):
+    raise NotImplementedError("Not yet implemented")
