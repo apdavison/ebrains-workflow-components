@@ -46,6 +46,21 @@ test_bluepyefe_components:
     - cd tools/BluepyEfe/test
     - cwltool --no-container ../extract_ephys_features.cwl extract_ephys_features.yaml
 
+
+build_fmriprep_image:
+  stage: build
+  rules:
+    - changes:
+      - tools/fmriprep/image/Dockerfile_pip
+      - tools/fmriprep/image/requirements.txt
+  tags:
+    - shell-runner
+  script:
+    - cd tools/fmriprep/image
+    - docker build -f Dockerfile_pip -t docker-registry.ebrains.eu/workflow-components/fmriprep:pip .
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
+    - docker push docker-registry.ebrains.eu/workflow-components/fmriprep:pip
+
 # test_elephant_components:
 #   image: docker-registry.ebrains.eu/workflow-components/elephant
 #   tags:
