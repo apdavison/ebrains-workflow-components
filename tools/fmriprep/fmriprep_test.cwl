@@ -11,7 +11,7 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/fmriprep:esd
+    dockerImageId: docker-registry.ebrains.eu/workflow-components/fmriprep:pip
 
 doc:
      - "doc"
@@ -28,7 +28,8 @@ requirements:
           /bin/bash "$1" # Download dataset from dataset download script
           /bin/echo "... End Downloading data"
           /bin/echo "Calling fMRIPrep ..."
-          fmriprep "$2" "$3" "$4" "$5"
+          /bin/echo "2: $2" "3: $3" "4: $4" "5: $5"
+          fmriprep "$2" "$3" "$4"
 
 
 # Inputs
@@ -49,11 +50,11 @@ inputs:
     inputBinding:
       position: 3
   analysis_level:
-    type: string
+    type: string?
     inputBinding:
       position: 4
   named_options:
-    type: string
+    type: string?
     inputBinding:
       position: 5
 
