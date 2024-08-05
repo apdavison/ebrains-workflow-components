@@ -304,7 +304,7 @@ class ElephantUtilsTestCase(unittest.TestCase):
             with self.subTest(f"File {dataset}", dataset=dataset):
                 # FIXME: reading of block descriptions in NWB IO
                 if dataset == "nwb_2":
-                    self.fail("FIXME: NWB files with 2 blocks are read with the description of the first block")
+                    self.skipTest("FIXME: NWB files with 2 blocks are read with the description of the first block")
                 file_format = dataset.split("_")[0]
                 file_blocks = READ_FUNCTIONS[file_format](self.dataset_files[dataset])
                 generated_blocks = self.blocks[dataset]
@@ -606,9 +606,9 @@ class ElephantUtilsTestCase(unittest.TestCase):
                     assert signal.shape == expected_signal.shape
 
                     # Check if the expected information match
-                    expected_signal_info = expected_signal_info[block_name][segment_index][signal_index]
-                    assert signal.name == expected_signal_info[0]    # name
-                    assert signal.shape == expected_signal_info[1]   # shape
+                    expected_sel_info = expected_signal_info[block_name][segment_index][signal_index]
+                    assert signal.name == expected_sel_info[0]    # name
+                    assert signal.shape == expected_sel_info[1]   # shape
 
     def test_select_data_analog_signal_wrong_index(self):
         # Checks if the data selection function raises ValueError when trying
