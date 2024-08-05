@@ -4,7 +4,10 @@ WORKDIR /usr/src/app
 
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
-RUN pip install cwltool
+RUN wget https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.4.1/freesurfer_ubuntu22-7.4.1_amd64.deb
+RUN dpkg -i freesurfer_ubuntu22-7.4.1_amd64.deb
+ENV FREESURFER_HOME="/usr/local/freesurfer/7.4.1"
+RUN ls -al /usr/local/freesurfer
 
 ENV PATH="/usr/src/app:$PATH"
 

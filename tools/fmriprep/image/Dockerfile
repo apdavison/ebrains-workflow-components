@@ -7,11 +7,20 @@ COPY ./spack.yaml /opt/spack-environment/spack.yaml
 
 # Get the additional EBRAINS package definitions
 # TODO: here we get the main branch, we may wish to use a release tag
-RUN git clone https://gitlab.ebrains.eu/ri/tech-hub/platform/esd/ebrains-spack-builds.git /opt/ebrains-spack-builds
+RUN git clone https://gitlab.ebrains.eu/fbonnier/ebrains-spack-builds.git /opt/ebrains-spack-builds
+RUN cd /opt/ebrains-spack-builds && git checkout fbonnier-master-patch-44996
 
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment && spack repo add /opt/ebrains-spack-builds && spack env activate . && spack install --fail-fast && spack gc -y
 
+# ENV EDITOR=nano
+# ENV SPACK_EDITOR=nano
+
+# RUN spack create --name py-fmriprep https://github.com/nipreps/fmriprep/archive/refs/tags/24.0.0.tar.gz
+# RUN spack repo add /opt/ebrains-spack-builds/packages/py-fmriprep
+# COPY ./py-fmriprep/package.py /opt/ebrains-spack-builds/packages/py-fmriprep
+
+# RUN cd /opt/spack-environment && spack repo add /opt/ebrains-spack-builds && spack env activate . && spack install --fail-fast && spack gc -y
 
 # Strip all the binaries
 RUN find -L /opt/views/* -type f -exec readlink -f '{}' \; | \
@@ -30,6 +39,9 @@ FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y gfortran
 
+# Install fMRIPrep from spack package
+
+
 COPY --from=builder /opt/spack-environment /opt/spack-environment
 COPY --from=builder /opt/software /opt/software
 
@@ -45,19 +57,9 @@ RUN { \
 && chmod a+x /entrypoint.sh \
 && ln -s /opt/views/view /opt/view
 
+# COPY ./py-fmriprep/package.py /opt/ebrains-spack-builds/packages/py-fmriprep
+
 WORKDIR /usr/src/app
-
-# Copy test cases scripts downloader to the docker
-# COPY tools/fmriprep/test/openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh
-# COPY tools/fmriprep/test/openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh
-# RUN chmod +x openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh
-# RUN chmod +x openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh
-
-# # Run scipt downloader and download test cases
-# ##
-# RUN cd openneuro.ds000254.v1.0.0/ && ./ds000254-1.0.0.sh
-# RUN cd openneuro.ds004996.v1.0.1/ && ./ds004996-1.0.1.sh
-
 ENV PATH="/usr/src/app:$PATH"
 
 ENTRYPOINT [ "/entrypoint.sh" ]

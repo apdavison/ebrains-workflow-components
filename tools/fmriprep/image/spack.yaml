@@ -1,8 +1,8 @@
 spack:
   specs:
-    - py-fmriprep@2.0.4
+    - py-fmriprep
   concretizer:
-    unify: when_possible
+    unify: true
   config:
     install_tree: /opt/software
   view: /opt/views/view
