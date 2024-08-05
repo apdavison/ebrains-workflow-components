@@ -107,16 +107,12 @@ def quantity_arg(arg):
 
 
 def prepare_data(old_block, analog_signal=None, spike_train=None, action=None):
-    # Validate the action parameter
     if action not in {"new", "replace", "add"}:
         raise ValueError("Invalid action. Valid options are 'new', 'replace', 'add'.")
-
-    # Validate the provided data
     if (analog_signal is None or len(analog_signal) == 0) and (spike_train is None or len(spike_train) == 0):
         raise ValueError("At least one data element must be provided.")
 
     if action == "new":
-        # Create a new block and add the provided data
         new_block = neo.Block()
         new_segment = neo.Segment()
         new_block.segments.append(new_segment)
@@ -126,7 +122,6 @@ def prepare_data(old_block, analog_signal=None, spike_train=None, action=None):
             new_block.segments[0].spiketrains.extend(spike_train)
         return new_block
     elif action == "replace":
-        # Replace the existing data in the old_block with the new data
         old_block.segments = []
         if analog_signal:
             old_block.segments[0].analogsignals.extend(analog_signal)
@@ -134,7 +129,6 @@ def prepare_data(old_block, analog_signal=None, spike_train=None, action=None):
             old_block.segments[0].spiketrains.extend(spike_train)
         return old_block
     elif action == "add":
-        # Add the new data to the existing old_block
         if analog_signal:
             old_block.segments.analogsignals.extend(analog_signal)
         if spike_train:
