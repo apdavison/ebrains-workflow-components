@@ -13,7 +13,7 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/fmriprep:pip-xorg
+    dockerImageId: docker-registry.ebrains.eu/workflow-components/fmriprep:pip
 
 doc:
      - "doc"

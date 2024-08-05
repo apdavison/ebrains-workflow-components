@@ -1,12 +1,29 @@
 FROM python:3.11
 
+ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /usr/src/app
+SHELL ["/bin/bash", "-c"]
+
+COPY apt_requirements.txt apt_requirements.txt
+RUN apt update && apt upgrade -y
+RUN apt install -y locales locales-all
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+RUN apt update && apt upgrade -y
+RUN xargs apt-get -y install < apt_requirements.txt
 
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
-RUN wget https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.4.1/freesurfer_ubuntu22-7.4.1_amd64.deb
+RUN wget --no-verbose https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.4.1/freesurfer_ubuntu22-7.4.1_amd64.deb
 RUN dpkg -i freesurfer_ubuntu22-7.4.1_amd64.deb
 ENV FREESURFER_HOME="/usr/local/freesurfer/7.4.1"
+ENV FSFAST_HOME="$FREESURFER_HOME/fsfast"
+ENV FSF_OUTPUT_FORMAT="nii.gz"
+ENV SUBJECTS_DIR="$FREESURFER_HOME/subjects"
+ENV MNI_DIR="$FREESURFER_HOME/mni"
+ENV FSLOUTPUTTYPE="NIFTI"
+RUN source $FREESURFER_HOME/SetUpFreeSurfer.sh
 RUN ls -al /usr/local/freesurfer
 
 ENV PATH="/usr/src/app:$PATH"
