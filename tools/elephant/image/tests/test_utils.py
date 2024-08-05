@@ -701,7 +701,7 @@ class ElephantUtilsTestCase(unittest.TestCase):
                 expected_infos = expected_signal_info[segment_index][signal_index]
                 assert len(signals) == len(expected_signals)
 
-                for idx, signal in signals:
+                for idx, signal in enumerate(signals):
                     # Check if name, IDs and shape agree with the
                     # directly-loaded signal
                     assert signal.name == expected_signals[idx].name

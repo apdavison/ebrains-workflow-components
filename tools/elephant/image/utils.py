@@ -36,7 +36,10 @@ def select_data(block, segment_index=0,
         elif analog_signal_index is not None:
             segments = block.segments[_parse_slice(segment_index)]
             if not isinstance(segments, list):
-                segments = [segments]
+                analog_signals = segments.analogsignals[_parse_slice(analog_signal_index)]
+                if not isinstance(analog_signals, list):
+                    return [analog_signals]
+                return analog_signals
             return [segment.analogsignals[_parse_slice(analog_signal_index)] for segment in segments]
         else:
             raise ValueError("spike_train or analog_signal index not provided")
