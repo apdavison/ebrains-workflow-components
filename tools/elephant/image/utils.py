@@ -87,19 +87,56 @@ def load_data(input_file, input_format=None, block_index=None, block_name=None):
                 return block
         except TypeError:
             raise ValueError("input_file and input_format do not match, please provide valid file and correct input format")
+    else:
+        try:
+            return io.read()
+        except TypeError:
+            raise ValueError("input_file and input_format do not match, please provide valid file and correct input format")
 
 
-def save_data(data, output_file, output_format, action):
-    saved_block = neo.Block()
-    segment = neo.Segment()
-    segment.analogsignals.append(data)
-    saved_block.add(segment)
+def save_data(data, output_file, output_format=None, action="new"):
+    valid_actions = {"new", "replace", "update"}
+    valid_output_formats = {"NixIO", "NWBIO"}
+    if action not in valid_actions:
+        raise ValueError(f"Invalid action: {action}. Valid actions are {valid_actions}")
+    if output_format and output_format not in valid_output_formats:
+        raise ValueError(f"Invalid output format: {output_format}. Valid formats are {valid_output_formats}")
+    if output_format is None:
+        ext = output_file.suffix.lower()
+        if ext == ".nix":
+            output_format = "NixIO"
+        elif ext == ".nwb":
+            output_format = "NWBIO"
+        else:
+            raise ValueError("Could not infer output format from file extension and none was provided.")
+
+    if action == "new" and output_file.exists():
+        raise ValueError(f"File {output_file} already exists and action is 'new'.")
+    elif action == "replace" and not output_file.exists():
+        raise ValueError(f"File {output_file} does not exist and action is 'replace'.")
+    elif action == "update" and not output_file.exists():
+        raise ValueError(f"File {output_file} does not exist and action is 'update'.")
+
+    if isinstance(data, (neo.AnalogSignal, neo.SpikeTrain)):
+        saved_block = neo.Block()
+        segment = neo.Segment()
+        if isinstance(data, neo.AnalogSignal):
+            segment.analogsignals.append(data)
+        if isinstance(data, neo.SpikeTrain):
+            segment.spiketrains.append(data)
+        saved_block.add(segment)
+    elif isinstance(data, neo.Block):
+        saved_block = data
+    elif isinstance(data, neo.Segment):
+        saved_block = neo.Block()
+        saved_block.add(data)
 
     if output_format == "NixIO":
-        neo.NixIO(output_file, "ow").write_block(saved_block)
+        with neo.NixIO(output_file, mode="ow" if action in ["replace", "new"] else "rw") as io:
+            io.write_block(saved_block)
     elif output_format == "NWBIO":
-        saved_block.annotate(session_start_time=datetime.now())
-        neo.NWBIO(output_file, "w").write_block(saved_block)
+        with neo.NWBIO(output_file, mode="w" if action in ["replace", "new"] else "?") as io:
+            io.write_block(saved_block)
 
 
 def quantity_arg(arg):

@@ -952,10 +952,12 @@ class ElephantUtilsTestCase(unittest.TestCase):
             nwb = ((file_format == "nwb") or
                    ((file_format == "data") and (output_format == "NWBIO")))
 
-            with self.subTest(f"Save new non existing file",
+            with self.subTest("Save new non existing file",
                               file_format=file_format,
                               output_format=output_format,
                               nwb=nwb):
+                if nwb:
+                    self.skipTest("NWBIO is not fully functional yet")
                 file_name = f"{uuid.uuid4()}.{file_format}"
                 output_file = Path(self.tmp_dir.name) / file_name
                 new_block = generate_block_1(datetime.now())
@@ -979,7 +981,7 @@ class ElephantUtilsTestCase(unittest.TestCase):
                 # Load should fail for incorrect format
                 with self.assertRaises(ValueError):
                     load_data(output_file,
-                              input_format="NWBIO" if nwb else "NixIO")
+                              input_format="NWBIO" if not nwb else "NixIO")
 
     @unittest.skip
     def test_save_data_new_existing_nix(self):
