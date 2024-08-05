@@ -28,6 +28,7 @@ from utils import load_data, select_data, prepare_data, save_data
 
 np.random.seed(1234)    # Set seed for reproducibility
 
+
 def get_spike_trains(firing_rate, n_spiketrains, t_stop, source):
     sts = StationaryPoissonProcess(
         firing_rate, t_stop=t_stop).generate_n_spiketrains(n_spiketrains)
@@ -209,7 +210,9 @@ class ElephantUtilsTestCase(unittest.TestCase):
 
         assert len(seg_1.spiketrains) == 30
         for idx, st in enumerate(seg_1.spiketrains, start=1):
-            assert st.annotations["source"] == "Region 1"
+            # TODO: remove after NWBio supports annotations
+            if not nwb:
+                assert st.annotations["source"] == "Region 1"
             assert st.name == f"Unit {idx}"
 
     @staticmethod
@@ -240,7 +243,8 @@ class ElephantUtilsTestCase(unittest.TestCase):
         for idx, st in enumerate(seg_2_1.spiketrains, start=1):
             source = "ST 1.2" if idx > 15 else "ST 1.1"
             unit_id = idx - 15 if idx > 15 else idx
-            assert st.annotations["source"] == source
+            if not nwb: 
+                assert st.annotations["source"] == source
             assert st.name == f"Unit {unit_id}"
 
         assert len(seg_2_2.analogsignals) == 2
@@ -253,7 +257,8 @@ class ElephantUtilsTestCase(unittest.TestCase):
 
         assert len(seg_2_2.spiketrains) == 10
         for idx, st in enumerate(seg_2_2.spiketrains, start=1):
-            assert st.annotations["source"] == "ST 2"
+            if not nwb:
+                assert st.annotations["source"] == "ST 2"
             assert st.name == f"Unit {idx}"
 
     @classmethod
@@ -514,7 +519,7 @@ class ElephantUtilsTestCase(unittest.TestCase):
         self._check_block_objects_equal(first=block_2,
                                         second=self.blocks['nix_2'][1],
                                         nwb=False)
-        self._check_block_2_data(block_1, nwb=False)
+        self._check_block_2_data(block_2, nwb=False)
 
     def test_load_data_nix_by_name_one_block(self):
         # Checks if the load function loads the correct Block from a NIX file
@@ -765,7 +770,7 @@ class ElephantUtilsTestCase(unittest.TestCase):
                 expected_infos = expected_signal_info[segment_index][signal_index]
                 assert len(signals) == len(expected_signals)
 
-                for idx, signal in signals:
+                for idx, signal in enumerate(signals):
                     # Check if name, IDs and shape agree with the
                     # directly-loaded signal
                     assert signal.name == expected_signals[idx].name
