@@ -791,7 +791,7 @@ class ElephantUtilsTestCase(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     select_data(self.blocks['nix_2'][1],
                                 segment_index=segment_index,
-                                signal_index=signal_index)
+                                analog_signal_index=signal_index)
 
     @unittest.skip
     def test_select_data_analog_signal_by_name(self):
