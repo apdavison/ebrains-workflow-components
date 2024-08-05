@@ -644,11 +644,6 @@ class ElephantUtilsTestCase(unittest.TestCase):
 
         expected_signal_info = {
             0: {
-                "0:1": [("AS 1.1", (2000, 32)), ("AS 1.2", (2000, 8))],
-                "all": [("AS 1.1", (2000, 32)), ("AS 1.2", (2000, 8))],
-            },
-
-            1: {
                 "0:1": [("AS 1.1", (3000, 32)),
                         ("AS 1.2", (3000, 8))],
                 "0:2": [("AS 1.1", (3000, 32)),
@@ -660,32 +655,37 @@ class ElephantUtilsTestCase(unittest.TestCase):
                         ("AS 1.2", (3000, 8)),
                         ("AS 1.3", (3000, 16))],
             },
+
+            1: {
+                "0:1": [("AS 2.1", (2000, 8)), ("AS 2.2", (2000, 16))],
+                "all": [("AS 2.1", (2000, 8)), ("AS 2.2", (2000, 16))],
+            },
         }
 
         expected_objects = {
             0: {
                 "0:1": [segments[0].analogsignals[0],
                         segments[0].analogsignals[1]],
+                "0:2": [segments[0].analogsignals[0],
+                        segments[0].analogsignals[1],
+                        segments[0].analogsignals[2]],
+                "1:2": [segments[0].analogsignals[1],
+                        segments[0].analogsignals[2]],
                 "all": [segments[0].analogsignals[0],
-                        segments[0].analogsignals[1]],
+                        segments[0].analogsignals[1],
+                        segments[0].analogsignals[2]],
             },
 
             1: {
                 "0:1": [segments[1].analogsignals[0],
                         segments[1].analogsignals[1]],
-                "0:2": [segments[1].analogsignals[0],
-                        segments[1].analogsignals[1],
-                        segments[1].analogsignals[2]],
-                "1:2": [segments[1].analogsignals[1],
-                        segments[1].analogsignals[2]],
                 "all": [segments[1].analogsignals[0],
-                        segments[1].analogsignals[1],
-                        segments[1].analogsignals[2]],
+                        segments[1].analogsignals[1]],
             },
         }
 
-        test_iterations = [(0, "0:1"), (0, "all"),
-                           (1, "0:1"), (1, "0:2"), (1, "1:2"), (1, "all")]
+        test_iterations = [(1, "0:1"), (1, "all"),
+                           (0, "0:1"), (0, "0:2"), (0, "1:2"), (0, "all")]
         for segment_index, signal_index in test_iterations:
             with self.subTest(
                     f"Seg {segment_index}, multiple signal {signal_index}",
@@ -709,9 +709,9 @@ class ElephantUtilsTestCase(unittest.TestCase):
                     assert signal.shape == expected_signals[idx].shape
 
                     # Check if the expected information match
-                    expected_signal_info = expected_infos[idx]
-                    assert signal.name == expected_signal_info[0]    # name
-                    assert signal.shape == expected_signal_info[1]   # shape
+                    expected_sel_info = expected_infos[idx]
+                    assert signal.name == expected_sel_info[0]    # name
+                    assert signal.shape == expected_sel_info[1]   # shape
 
     def test_select_data_analog_signal_segment_range_single_signal(self):
         # Checks if the data selection function loads multiple analog signals
@@ -728,12 +728,12 @@ class ElephantUtilsTestCase(unittest.TestCase):
 
         expected_signal_info = {
             "0:1": {
-                0: [("AS 1.1", (2000, 32)), ("AS 1.1", (3000, 32))],
-                1: [("AS 1.2", (2000, 32)), ("AS 1.2", (3000, 8))],
+                0: [("AS 1.1", (3000, 32)), ("AS 2.1", (2000, 8))],
+                1: [("AS 1.2", (3000, 8)), ("AS 2.2", (2000, 16))],
             },
             "all": {
-                0: [("AS 1.1", (2000, 32)), ("AS 1.1", (3000, 32))],
-                1: [("AS 1.2", (2000, 32)), ("AS 1.2", (3000, 8))],
+                0: [("AS 1.1", (3000, 32)), ("AS 2.1", (2000, 8))],
+                1: [("AS 1.2", (3000, 8)), ("AS 2.2", (2000, 16))],
             },
         }
 
@@ -778,9 +778,9 @@ class ElephantUtilsTestCase(unittest.TestCase):
                     assert signal.shape == expected_signals[idx].shape
 
                     # Check if the expected information match
-                    expected_signal_info = expected_infos[idx]
-                    assert signal.name == expected_signal_info[0]    # name
-                    assert signal.shape == expected_signal_info[1]   # shape
+                    expected_sel_info = expected_infos[idx]
+                    assert signal.name == expected_sel_info[0]    # name
+                    assert signal.shape == expected_sel_info[1]   # shape
 
         # Check expected failures, i.e., requesting a signal index that does
         # not exist across all segments
