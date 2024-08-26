@@ -1,14 +1,17 @@
 download_script:
   class: File
-  path: inputs/openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh
+  # path: inputs/openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh
+  path: inputs/openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh
   
 bids_path:
   class: Directory
-  path: inputs/openneuro.ds000254.v1.0.0
+  # path: inputs/openneuro.ds000254.v1.0.0
+  path: inputs/openneuro.ds004996.v1.0.1
 
 derivatives_path:
     class: Directory
-    path: outputs/openneuro.ds000254.v1.0.0/derivatives
+    # path: outputs/openneuro.ds000254.v1.0.0/derivatives
+    path: outputs/openneuro.ds004996.v1.0.1/derivatives
 
 analysis_level: "participant"
 
