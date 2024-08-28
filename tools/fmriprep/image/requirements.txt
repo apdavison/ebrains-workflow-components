@@ -5,6 +5,7 @@ nipype
 fslpy
 c3d
 antspyx
+PySocks
 
 fmriprep
 fmriprep-docker

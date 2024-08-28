@@ -4,7 +4,6 @@ cwlVersion: v1.2
 class: CommandLineTool
 baseCommand: ["bash", "fmriprep_docker.sh"]
 
-# Testcase DOI: doi:10.18112/openneuro.ds000254.v1.0.0
 
 
 
@@ -27,14 +26,20 @@ requirements:
     listing:
       - entryname: fmriprep_docker.sh
         entry: |-
-          /bin/echo "Creating derivative directories in $3"
-          /bin/bash "mkdir -p $3" # Creating derivative directories
+          # /bin/echo "Creating derivative directories in $3"
+          # /bin/bash "mkdir -p $3" # Creating derivative directories
           /bin/echo "Downloading datasets in $2 ..."
-          /bin/bash "$1" # Download dataset from dataset download script 
+          cd "$2"
+          /bin/bash "$1" # Download dataset from dataset download script
+          # datalad install -s "$6" "$2" # Download dataset from dataset download script
+          cd ..
+          ls "$2"
           /bin/echo "Download finished, inputs are in $2"
           /bin/echo "Start fMRIPrep $2 $3 $4"
           fmriprep "$2" "$3" "$4"
       - entry: $(inputs.derivatives_path)
+        writable: true
+      - entry: $(inputs.bids_path)
         writable: true
 
 
@@ -76,3 +81,7 @@ outputs:
     type: Directory
     outputBinding:
       outputEval: $(inputs.derivatives_path)
+  bids_path_output:
+    type: Directory
+    outputBinding:
+      outputEval: $(inputs.bids_path)

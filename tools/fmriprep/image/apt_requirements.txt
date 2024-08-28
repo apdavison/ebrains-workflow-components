@@ -52,3 +52,5 @@ libxmu6
 libxrender1
 libxss1
 libxt6
+
+datalad
