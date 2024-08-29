@@ -1,24 +1,31 @@
 download_script:
   class: File
-  path: inputs/openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh #1
-  # path: inputs/openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh #2 No BOLD images found
-  # path: inputs/openneuro.ds004993-1.1.2/ds004993-1.1.2.sh #3 No BOLD images found
-  # path: inputs/openneuro.ds005422-1.0.1/ds005422-1.0.1.sh #4 No BOLD images found
+  # path: inputs/openneuro.ds000254.v1.0.0/ds000254-1.0.0.sh #1 Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004996.v1.0.1/ds004996-1.0.1.sh #2 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004993-1.1.2/ds004993-1.1.2.sh #3 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  path: inputs/openneuro.ds005422-1.0.1/ds005422-1.0.1.sh #4 No BOLD images found; Exception: Some connections were not found Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004131-1.0.1/ds004131-1.0.1.sh #5 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004130-1.0.0/ds004130-1.0.0.sh #6  No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
   
 bids_path:
   class: Directory
-  path: inputs/openneuro.ds000254.v1.0.0 #1
-  # path: inputs/openneuro.ds004996.v1.0.1 #2 No BOLD images found
-  # path: inputs/openneuro.ds004993-1.1.2 #3 No BOLD images found
-  # path: inputs/openneuro.ds005422-1.0.1 #4 No BOLD images found
+  # path: inputs/openneuro.ds000254.v1.0.0 #1 Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004996.v1.0.1 #2 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004993-1.1.2 #3 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  path: inputs/openneuro.ds005422-1.0.1 #4 No BOLD images found; Exception: Some connections were not found Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004131-1.0.1 #5 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004130-1.0.0 #6 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
 
 derivatives_path:
   class: Directory
-  path: outputs/openneuro.ds000254.v1.0.0/derivatives #1
-  # path: outputs/openneuro.ds004996.v1.0.1/derivatives #2 No BOLD images found
-  # path: outputs/openneuro.ds004993-1.1.2/derivatives #3 No BOLD images found
-  # path: outputs/openneuro.ds005422-1.0.1/derivatives #4 No BOLD images found
+  # path: outputs/openneuro.ds000254.v1.0.0/derivatives #1 Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: outputs/openneuro.ds004996.v1.0.1/derivatives #2 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: outputs/openneuro.ds004993-1.1.2/derivatives #3 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  path: outputs/openneuro.ds005422-1.0.1/derivatives #4 No BOLD images found; Exception: Some connections were not found Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004131-1.0.1/derivatives #5 No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+  # path: inputs/openneuro.ds004130-1.0.0/derivatives #6  No BOLD images found; Module ds_std_volumes_wf has no input called inputnode.t1w_preproc
+
 
 analysis_level: "participant"
 
-named_options: ""
+named_options: "--anat-only"
