@@ -51,15 +51,25 @@ build_fmriprep_image:
   stage: build
   rules:
     - changes:
-      - tools/fmriprep/image/Dockerfile_pip
+      - tools/fmriprep/image/Dockerfile_pip_ubuntu_xorg
       - tools/fmriprep/image/requirements.txt
+      - tools/fmriprep/image/apt_requirements.txt
   tags:
     - shell-runner
   script:
     - cd tools/fmriprep/image
-    - docker build -f Dockerfile_pip -t docker-registry.ebrains.eu/workflow-components/fmriprep:pip .
+    - docker build -f Dockerfile_pip_ubuntu_xorg -t docker-registry.ebrains.eu/workflow-components/fmriprep:pip .
     - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
     - docker push docker-registry.ebrains.eu/workflow-components/fmriprep:pip
+
+test_fmriprep_components:
+  image: docker-registry.ebrains.eu/workflow-components/fmriprep:pip
+  tags:
+    - docker-runner
+  stage: test
+  script:
+    - cd tools/fmriprep
+    - cwltool --no-container fmriprep_test.cwl test/fmriprep_inputs.yaml
 
 # test_elephant_components:
 #   image: docker-registry.ebrains.eu/workflow-components/elephant
