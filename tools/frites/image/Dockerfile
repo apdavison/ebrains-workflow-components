@@ -7,23 +7,13 @@ COPY ./spack.yaml /opt/spack-environment/spack.yaml
 
 # Get the additional EBRAINS package definitions
 # TODO: here we get the main branch, we may wish to use a release tag
-RUN git clone https://gitlab.ebrains.eu/fbonnier/ebrains-spack-builds.git /opt/ebrains-spack-builds
-RUN cd /opt/ebrains-spack-builds && git checkout fbonnier-master-patch-44996
+RUN git clone https://gitlab.ebrains.eu/ri/tech-hub/platform/esd/ebrains-spack-builds.git /opt/ebrains-spack-builds
 
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment && spack repo add /opt/ebrains-spack-builds && spack env activate . && spack install --fail-fast && spack gc -y
 
-# ENV EDITOR=nano
-# ENV SPACK_EDITOR=nano
-
-# RUN spack create --name py-fmriprep https://github.com/nipreps/fmriprep/archive/refs/tags/24.0.0.tar.gz
-# RUN spack repo add /opt/ebrains-spack-builds/packages/py-fmriprep
-# COPY ./py-fmriprep/package.py /opt/ebrains-spack-builds/packages/py-fmriprep
-
-# RUN cd /opt/spack-environment && spack repo add /opt/ebrains-spack-builds && spack env activate . && spack install --fail-fast && spack gc -y
-
 # Strip all the binaries
-RUN find -L /opt/views/* -type f -exec readlink -f '{}' \; | \
+RUN find -L /opt/views/view/* -type f -exec readlink -f '{}' \; | \
     xargs file -i | \
     grep 'charset=binary' | \
     grep 'x-executable\|x-archive\|x-sharedlib' | \
@@ -38,9 +28,6 @@ RUN cd /opt/spack-environment && \
 FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y gfortran
-
-# Install fMRIPrep from spack package
-
 
 COPY --from=builder /opt/spack-environment /opt/spack-environment
 COPY --from=builder /opt/software /opt/software
@@ -57,9 +44,9 @@ RUN { \
 && chmod a+x /entrypoint.sh \
 && ln -s /opt/views/view /opt/view
 
-# COPY ./py-fmriprep/package.py /opt/ebrains-spack-builds/packages/py-fmriprep
-
 WORKDIR /usr/src/app
+COPY extract_ephys_features_cli.py extract_ephys_features_cli.py
+RUN chmod +x extract_ephys_features_cli.py
 ENV PATH="/usr/src/app:$PATH"
 
 ENTRYPOINT [ "/entrypoint.sh" ]
