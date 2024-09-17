@@ -1,0 +1,8 @@
+spack:
+  specs:
+    - py-fmriprep
+  concretizer:
+    unify: true
+  config:
+    install_tree: /opt/software
+  view: /opt/views/view
