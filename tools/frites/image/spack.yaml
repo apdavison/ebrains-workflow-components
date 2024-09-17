@@ -1,6 +1,6 @@
 spack:
   specs:
-    - py-fmriprep
+    - py-frites
   concretizer:
     unify: true
   config:
