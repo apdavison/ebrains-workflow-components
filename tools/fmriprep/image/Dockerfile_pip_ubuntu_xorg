@@ -9,16 +9,28 @@ RUN xargs apt-get -y install < apt_requirements.txt
 
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
-RUN wget --no-verbose https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.4.1/freesurfer_ubuntu22-7.4.1_amd64.deb
-RUN dpkg -i freesurfer_ubuntu22-7.4.1_amd64.deb
-ENV FREESURFER_HOME="/usr/local/freesurfer/7.4.1"
+# RUN wget --no-verbose https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.4.1/freesurfer_ubuntu22-7.4.1_amd64.deb
+# RUN dpkg -i freesurfer_ubuntu22-7.4.1_amd64.deb
+# ENV FREESURFER_HOME="/usr/local/freesurfer/7.4.1"
+# ENV FSFAST_HOME="$FREESURFER_HOME/fsfast"
+# ENV FSF_OUTPUT_FORMAT="nii.gz"
+# ENV SUBJECTS_DIR="$FREESURFER_HOME/subjects"
+# ENV MNI_DIR="$FREESURFER_HOME/mni"
+# ENV FSLOUTPUTTYPE="NIFTI"
+# RUN source $FREESURFER_HOME/SetUpFreeSurfer.sh
+# RUN ls -al /usr/local/freesurfer
+
+RUN wget --no-verbose https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.4.1/freesurfer-linux-ubuntu22_amd64-7.4.1.tar.gz
+RUN tar -zxpf freesurfer-linux-ubuntu22_amd64-7.4.1.tar.gz
+
+ENV FREESURFER_HOME="/usr/src/app/freesurfer"
+RUN ls $FREESURFER_HOME
 ENV FSFAST_HOME="$FREESURFER_HOME/fsfast"
 ENV FSF_OUTPUT_FORMAT="nii.gz"
 ENV SUBJECTS_DIR="$FREESURFER_HOME/subjects"
 ENV MNI_DIR="$FREESURFER_HOME/mni"
 ENV FSLOUTPUTTYPE="NIFTI"
 RUN source $FREESURFER_HOME/SetUpFreeSurfer.sh
-RUN ls -al /usr/local/freesurfer
 
 ENV PATH="/usr/src/app:$PATH"
 

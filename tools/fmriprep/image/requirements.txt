@@ -7,5 +7,4 @@ c3d
 antspyx
 PySocks
 
-fmriprep
-fmriprep-docker
+fmriprep==24.1.0
