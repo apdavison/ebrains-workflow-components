@@ -1,0 +1,100 @@
+# ====== SPACK ======= #
+# Build stage with Spack pre-installed and ready to be used
+FROM spack/ubuntu-jammy:develop AS builder
+
+# What we want to install and how we want to install it
+# is specified in a manifest file (spack.yaml)
+COPY ./spack.yaml /opt/spack-environment/spack.yaml
+
+# Get the additional EBRAINS package definitions
+# TODO: here we get the main branch, we may wish to use a release tag
+RUN git clone https://gitlab.ebrains.eu/ri/tech-hub/platform/esd/ebrains-spack-builds.git /opt/ebrains-spack-builds
+
+# Install the software, remove unnecessary deps
+RUN cd /opt/spack-environment && spack repo add /opt/ebrains-spack-builds && spack env activate . && spack install --fail-fast && spack gc -y
+
+# Strip all the binaries
+# RUN find -L /opt/views/* -type f -exec readlink -f '{}' \; | \
+#     xargs file -i | \
+#     grep 'charset=binary' | \
+#     grep 'x-executable\|x-archive\|x-sharedlib' | \
+#     awk -F: '{print $1}' | xargs strip
+
+# Modifications to the environment that are necessary to run
+RUN cd /opt/spack-environment && \
+    spack env activate --sh -d . > activate.sh
+
+# ====== FMRIPREP ======= #
+# Build stage with Spack pre-installed and ready to be used
+FROM nipreps/fmriprep:latest AS fmriprep-builder
+
+# Strip all the binaries
+# RUN find -L /opt/*/* -type f -exec readlink -f '{}' \; | \
+#     xargs file -i | \
+#     grep 'charset=binary' | \
+#     grep 'x-executable\|x-archive\|x-sharedlib' | \
+#     awk -F: '{print $1}' | xargs strip
+
+# # Modifications to the environment that are necessary to run
+# RUN cd /opt/spack-environment && \
+#     spack env activate --sh -d . > activate.sh
+
+
+# Bare OS image to run the installed executables
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get install -y gfortran curl
+
+# Copy tools from SPACK
+COPY --from=builder /opt/spack-environment /opt/spack-environment
+COPY --from=builder /opt/software /opt/software
+
+# Copy tools from fMRIPrep
+COPY --from=fmriprep-builder /opt/freesurfer /opt/freesurfer
+COPY --from=fmriprep-builder /opt/afni-latest /opt/afni-latest
+COPY --from=fmriprep-builder /opt/workbench /opt/workbench
+COPY --from=fmriprep-builder /usr/bin/c3d_affine_tool /usr/bin/c3d_affine_tool
+COPY --from=fmriprep-builder /bin/micromamba /bin/micromamba
+COPY --from=fmriprep-builder /opt/conda/envs/fmriprep /opt/conda/envs/fmriprep
+
+# paths.view is a symlink, so copy the parent to avoid dereferencing and duplicating it
+# COPY --from=builder /opt/views /opt/views
+
+ENV FMRIPREP_HOME="/opt/conda/envs/fmriprep"
+ENV AFNI_HOME="/opt/afni-latest"
+ENV WORKBENCH_HOME="/opt/workbench"
+
+ENV FREESURFER_HOME="/opt/freesurfer"
+ENV FSFAST_HOME="$FREESURFER_HOME/fsfast"
+ENV FSF_OUTPUT_FORMAT="nii.gz"
+ENV SUBJECTS_DIR="$FREESURFER_HOME/subjects"
+ENV MNI_DIR="$FREESURFER_HOME/mni"
+ENV FSLOUTPUTTYPE="NIFTI"
+
+
+RUN { \
+      echo '#!/bin/sh' \
+      && echo '.' /opt/spack-environment/activate.sh \
+      && echo 'FMRIPREP_HOME="/opt/conda/envs/fmriprep" AFNI_HOME="/opt/afni-latest"  WORKBENCH_HOME="/opt/workbench" FREESURFER_HOME="/opt/freesurfer"' \
+      && echo 'PATH="/usr/src/app:$PATH"' \
+      && echo 'PATH="$FMRIPREP_HOME/bin:$PATH" CPATH="$FMRIPREP_HOME/include" LD_LIBRARY_PATH="$FMRIPREP_HOME/lib"' \
+      && echo 'PATH="$AFNI_HOME:$PATH" AFNI_IMSAVE_WARNINGS="NO" AFNI_PLUGINPATH="$AFNI_HOME"' \
+      && echo 'PATH="$WORKBENCH_HOME/bin_linux64:$PATH" LD_LIBRARY_PATH="$WORKBENCH_HOME/lib_linux64:$LD_LIBRARY_PATH"' \
+      && echo 'LANG="C.UTF-8" LC_ALL="C.UTF-8" PYTHONNOUSERSITE=1 FSLDIR="$FMRIPREP_HOME" FSLOUTPUTTYPE="NIFTI_GZ" FSLMULTIFILEQUIT="TRUE" FSLLOCKDIR="" FSLMACHINELIST="" FSLREMOTECALL="" FSLGECUDAQ="cuda.q"' \
+      && echo 'OS="Linux" FS_OVERRIDE=0 FIX_VERTEX_AREA="" FSF_OUTPUT_FORMAT="nii.gz"' \
+      && echo 'SUBJECTS_DIR="$FREESURFER_HOME/subjects" FUNCTIONALS_DIR="$FREESURFER_HOME/sessions" MNI_DIR="$FREESURFER_HOME/mni" LOCAL_DIR="$FREESURFER_HOME/local" MINC_BIN_DIR="$FREESURFER_HOME/mni/bin" MINC_LIB_DIR="$FREESURFER_HOME/mni/lib"     MNI_DATAPATH="$FREESURFER_HOME/mni/data"' \
+      && echo 'PERL5LIB="$MINC_LIB_DIR/perl5/5.8.5" MNI_PERL5LIB="$MINC_LIB_DIR/perl5/5.8.5" PATH="$FREESURFER_HOME/bin:$FREESURFER_HOME/tktools:$MINC_BIN_DIR:$PATH"' \
+      && echo 'exec "$@"'; \
+    } > /usr/src/app/entrypoint.sh \
+&& chmod a+x /usr/src/app/entrypoint.sh \
+&& ln -s /opt/views/view /opt/view && cd /usr/src/app
+
+
+# ENV PATH="/usr/src/app:$PATH"
+# ENV PATH="/opt/conda/envs/fmriprep/bin:$PATH"
+
+ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
+CMD [ "/bin/bash" ]

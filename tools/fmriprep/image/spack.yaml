@@ -1,6 +1,4 @@
 spack:
-  specs:
-    - py-fmriprep
   concretizer:
     unify: true
   config:

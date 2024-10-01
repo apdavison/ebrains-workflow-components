@@ -1,6 +1,7 @@
 python3-pip
 wget
 curl
+unzip
 language-pack-en
 libx11-dev
 gettext
@@ -52,5 +53,5 @@ libxmu6
 libxrender1
 libxss1
 libxt6
-
+connectome-workbench
 datalad

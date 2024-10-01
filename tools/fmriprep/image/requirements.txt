@@ -3,6 +3,7 @@ sentry-sdk
 pyfreesurfer
 nipype
 fslpy
+fslutils
 c3d
 antspyx
 PySocks

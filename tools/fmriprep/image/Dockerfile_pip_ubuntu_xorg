@@ -9,6 +9,13 @@ RUN xargs apt-get -y install < apt_requirements.txt
 
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
+
+# Install ANTS
+RUN wget --no-verbose https://github.com/ANTsX/ANTs/releases/download/v2.5.3/ants-2.5.3-ubuntu-22.04-X64-gcc.zip
+RUN unzip ants-2.5.3-ubuntu-22.04-X64-gcc.zip
+ENV ANTS_HOME="/usr/src/app/ants-2.5.3"
+
+
 # RUN wget --no-verbose https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.4.1/freesurfer_ubuntu22-7.4.1_amd64.deb
 # RUN dpkg -i freesurfer_ubuntu22-7.4.1_amd64.deb
 # ENV FREESURFER_HOME="/usr/local/freesurfer/7.4.1"
@@ -20,11 +27,26 @@ RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r re
 # RUN source $FREESURFER_HOME/SetUpFreeSurfer.sh
 # RUN ls -al /usr/local/freesurfer
 
+
+# Install FreeSurfer
 RUN wget --no-verbose https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.4.1/freesurfer-linux-ubuntu22_amd64-7.4.1.tar.gz
 RUN tar -zxpf freesurfer-linux-ubuntu22_amd64-7.4.1.tar.gz
 
+# Install MSM
+RUN wget --no-verbose https://github.com/ecr05/MSM_HOCR/releases/download/v3.0FSL/msm_ubuntu_v3
+RUN chmod +x ./msm_ubuntu_v3
+
+# Install FSL
+RUN wget --no-verbose https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/fslinstaller.py
+RUN python3 fslinstaller.py --skip_registration --dest /usr/src/app/fsl
+ENV FSL_HOME="/usr/src/app/fsl"
+RUN source ${FSL_HOME}/etc/fslconf/fsl.sh
+# ENV FSLDEVDIR="/usr/src/app/fsldevdir"
+# RUN mkdir -p  $FSLDEVDIR  $FSLDEVDIR/extras $FSLDEVDIR/extras/include $FSLDEVDIR/extras/src
+
 ENV FREESURFER_HOME="/usr/src/app/freesurfer"
-RUN ls $FREESURFER_HOME
+COPY license.txt $FREESURFER_HOME/license.txt 
+
 ENV FSFAST_HOME="$FREESURFER_HOME/fsfast"
 ENV FSF_OUTPUT_FORMAT="nii.gz"
 ENV SUBJECTS_DIR="$FREESURFER_HOME/subjects"
@@ -32,6 +54,14 @@ ENV MNI_DIR="$FREESURFER_HOME/mni"
 ENV FSLOUTPUTTYPE="NIFTI"
 RUN source $FREESURFER_HOME/SetUpFreeSurfer.sh
 
+ENV PATH="$FREESURFER_HOME/bin:$PATH"
+ENV LD_LIBRARY_PATH="$FREESURFER_HOME/lib"
+ENV PATH="$ANTS_HOME/bin:$PATH"
+ENV LD_LIBRARY_PATH="$ANTS_HOME/lib:$LD_LIBRARY_PATH"
+ENV PATH="$FSL_HOME/bin:$PATH"
+ENV LD_LIBRARY_PATH="$FSL_HOME/lib:$LD_LIBRARY_PATH"
+ENV PATH="$FSFAST_HOME/bin:$PATH"
+ENV LD_LIBRARY_PATH="$FSFAST_HOME/lib:$LD_LIBRARY_PATH"
 ENV PATH="/usr/src/app:$PATH"
 
 CMD [ "/bin/sh" ]
