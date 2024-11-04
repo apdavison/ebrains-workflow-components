@@ -3,7 +3,7 @@
 import argparse
 from pathlib import Path
 
-from elephant.signal_processing import wavelet_transform as wavelet
+import elephant
 from utils import load_data, save_data, prepare_data, select_data, quantity_arg
 
 CLI = argparse.ArgumentParser()
@@ -53,7 +53,7 @@ def wavelet_transform(
     # Iterate over all loaded AnalogSignals
     transformed_signals = [
         # Transform using Elephant wavelet_transform function
-        wavelet(
+        elephant.signal_processing.wavelet_transform(
             signal=signal,
             frequency=frequency,
             n_cycles=n_cycles,
@@ -63,10 +63,17 @@ def wavelet_transform(
         for signal in signals
     ]
 
-    # Save data
-    save_data()
+    # Save data to pickle
+    save_transform()
+
+    def save_transform():
+        # TODO: implement
 
 
+    def plot_transform():
+        # TODO: implement
+        
+        
 if __name__ == "__main__":
     args, unknown = CLI.parse_known_args()
     wavelet_transform(**vars(args))
