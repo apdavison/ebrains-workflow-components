@@ -64,14 +64,15 @@ def wavelet_transform(
     ]
 
     # Save data to pickle
-    save_transform()
+    # save_transform()
 
     def save_transform():
         # TODO: implement
-
+        pass
 
     def plot_transform():
         # TODO: implement
+        pass
         
         
 if __name__ == "__main__":
