@@ -3,11 +3,23 @@
 import argparse
 from pathlib import Path
 from collections import Iterable
+from numbers import Number
+
 
 import numpy as np
 import matplotlib.pyplot as plt
 import elephant
-from utils import load_data, select_data
+from utils import load_data, select_data, _parse_slice
+
+
+def freq_list(value):
+    if isinstance(value, Number):
+        return [value]
+    freq_range = _parse_slice(value)
+    return list(range(freq_range.start or 0,
+                      freq_range.stop,
+                      freq_range.step or 1))
+
 
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--input_file", nargs="?", type=Path, required=True, help="path with file with the input data")
@@ -18,7 +30,7 @@ CLI.add_argument("--block_name", nargs="?", type=str, default=None, help="Name o
 CLI.add_argument("--segment_index", nargs="?", type=int, default=0, help="Index of the segment to process (default: 0)")
 CLI.add_argument("--analog_signal_index", nargs="?", type=int, default=0, help="Index of the analog signal to process (default: 0)")
 CLI.add_argument("--visualization_plots", type=bool, default=True, help="Generate visualization plots for each input signal. It is averaged over channels.")
-CLI.add_argument("--frequency", nargs="?", type=float, required=True, help="Center frequency of the Morlet wavelet in Hz")
+CLI.add_argument("--frequency", nargs="?", type=freq_list, required=True, help="Center frequency of the Morlet wavelet in Hz")
 CLI.add_argument("--n_cycles", nargs="?", type=float, default=6.0, help="Size of the mother wavelet (default: 6.0)")
 CLI.add_argument("--sampling_frequency", nargs="?", type=float, default=1.0, help="Sampling rate of the input data in Hz (default: 1.0)")
 CLI.add_argument("--zero_padding", nargs="?", type=bool, default=True, help="Specifies whether the data length is extended by padding zeros (default: True)")
@@ -29,8 +41,6 @@ def _plot_wavelet_transform(output_path,
                             wavelet_transform_signal,
                             signal_index,
                             frequency):
-    if not isinstance(frequency, Iterable):
-        frequency = [frequency]
     frequency = np.atleast_1d(np.array(frequency).squeeze())
 
     wavelet_spectrum = np.abs(np.atleast_3d(wavelet_transform_signal))
@@ -52,9 +62,10 @@ def _plot_wavelet_transform(output_path,
     fig.savefig(output_path / f"wavelet_spectrum_{signal_index}.pdf",
                 format="pdf")
 
-def _save_wavelet_transform(transformed_signals, output_file):
+def _save_wavelet_transform(transformed_signals, output_file,
+                            frequency):
     arrays = {i: array for i, array in enumerate(transformed_signals)}
-    np.savez(arrays, output_file)
+    np.savez(arrays, output_file, frequency=frequency)
 
 
 def wavelet_transform(
@@ -104,7 +115,7 @@ def wavelet_transform(
             _plot_wavelet_transform(output_path, signal, index, frequency)
 
     # Save the wavelet coefficients to a pickle file
-    _save_wavelet_transform(transformed_signals, output_file)
+    _save_wavelet_transform(transformed_signals, output_file, frequency)
         
 if __name__ == "__main__":
     args, unknown = CLI.parse_known_args()
