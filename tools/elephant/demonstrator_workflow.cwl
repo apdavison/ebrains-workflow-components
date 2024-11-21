@@ -56,7 +56,7 @@ steps:
       lowpass_frequency: lowpass_frequency
       order: order
       filter_function: filter_function
-      output_file: "filtered_output.nix"  # Specify the output file name
+      output_file: "filtered_output.nix"
     out: [output_file]
 
   step_wavelet_transform:
