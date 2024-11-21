@@ -65,7 +65,7 @@ def _plot_wavelet_transform(output_path,
 def _save_wavelet_transform(transformed_signals, output_file,
                             frequency):
     arrays = {i: array for i, array in enumerate(transformed_signals)}
-    np.savez(arrays, output_file, frequency=frequency)
+    np.savez(**arrays, file=output_file, frequency=frequency)
 
 
 def wavelet_transform(
