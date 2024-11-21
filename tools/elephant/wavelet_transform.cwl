@@ -34,16 +34,6 @@ inputs:
     label: "Path to the output file"
     inputBinding:
       prefix: --output_file
-  output_format:
-    type:
-      - "null"
-      - type: enum
-        symbols:
-          - NWBIO
-          - NixIO
-    label: "Format of the output file (optional). If not provided, will be inferred from the output file suffix"
-    inputBinding:
-      prefix: --output_format
   block_index:
     type: int?
     label: "Index of the block to process (default: 0)"
@@ -67,16 +57,17 @@ inputs:
     default: 0
     inputBinding:
       prefix: --analog_signal_index
-  action:
-    type: string
-    inputBinding:
-      prefix: --action
-    label: "Action on how to store the results with respect to the original data"
   frequency:
     type: float
     inputBinding:
       prefix: --frequency
     label: "Center frequency of the Morlet wavelet in Hz"
+  visualization_plots:
+    type: boolean?
+    label: "Generate visualization plots for each input signal. It is averaged over channels (default: True)"
+    default: true
+    inputBinding:
+      prefix: --visualization_plots
   n_cycles:
     type: float?
     label: "Size of the mother wavelet (default: 6.0)"
