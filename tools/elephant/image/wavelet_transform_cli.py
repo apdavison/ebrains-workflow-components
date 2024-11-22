@@ -16,11 +16,11 @@ def freq_list(value):
     except ValueError:
         parts = value.split(":")
 
-        start = float(parts[0]) if parts[0] else None
-        stop = float(parts[1]) + 1 if len(parts) > 1 and parts[1] else None
-        step = float(parts[2]) if len(parts) > 2 and parts[2] else None
+        start = float(parts[0]) if parts[0] else 0
+        step = float(parts[2]) if len(parts) > 2 and parts[2] else 1.0
+        stop = float(parts[1]) + step if len(parts) > 1 and parts[1] else step
 
-        return np.arange(start or 0, stop, step or 1.0)
+        return np.arange(start, stop, step, dtype=float)
 
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--input_file", nargs="?", type=Path, required=True, help="path with file with the input data")
