@@ -2,9 +2,6 @@
 
 import argparse
 from pathlib import Path
-from collections import Iterable
-from numbers import Number
-
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,13 +10,17 @@ from utils import load_data, select_data, _parse_slice
 
 
 def freq_list(value):
-    if isinstance(value, Number):
-        return [value]
-    freq_range = _parse_slice(value)
-    return list(range(freq_range.start or 0,
-                      freq_range.stop,
-                      freq_range.step or 1))
+    try:
+        frequency = float(value)
+        return np.atleast_1d([frequency])
+    except ValueError:
+        parts = value.split(":")
 
+        start = float(parts[0]) if parts[0] else None
+        stop = float(parts[1]) + 1 if len(parts) > 1 and parts[1] else None
+        step = float(parts[2]) if len(parts) > 2 and parts[2] else None
+
+        return np.arange(start or 0, stop, step or 1.0)
 
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--input_file", nargs="?", type=Path, required=True, help="path with file with the input data")
@@ -41,8 +42,6 @@ def _plot_wavelet_transform(output_path,
                             wavelet_transform_signal,
                             signal_index,
                             frequency):
-    frequency = np.atleast_1d(np.array(frequency).squeeze())
-
     wavelet_spectrum = np.abs(np.atleast_3d(wavelet_transform_signal))
     avg_wavelet_spectrum = np.nanmean(wavelet_spectrum, axis=1)
 
@@ -64,7 +63,7 @@ def _plot_wavelet_transform(output_path,
 
 def _save_wavelet_transform(transformed_signals, output_file,
                             frequency):
-    arrays = {i: array for i, array in enumerate(transformed_signals)}
+    arrays = {str(i): array for i, array in enumerate(transformed_signals)}
     np.savez(**arrays, file=output_file, frequency=frequency)
 
 
@@ -111,8 +110,10 @@ def wavelet_transform(
     # Plot visualization of the transformed signals
     if visualization_plots:
         output_path = output_file.parent
-        for index, signal in enumerate(transformed_signals):
-            _plot_wavelet_transform(output_path, signal, index, frequency)
+        for index, (input_signal, wt_signal) in \
+                enumerate(zip(signals, transformed_signals)):
+            _plot_wavelet_transform(output_path, input_signal, wt_signal,
+                                    index, frequency)
 
     # Save the wavelet coefficients to a pickle file
     _save_wavelet_transform(transformed_signals, output_file, frequency)
