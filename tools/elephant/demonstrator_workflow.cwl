@@ -9,6 +9,9 @@ inputs:
   input_format:
     type: string?
     label: "Format of the input data"
+  butterworth_output_file:
+    type: File
+    label: "Output file for Butterworth filter"
   highpass_frequency:
     type: string
     label: "High-pass cut-off frequency"
@@ -19,7 +22,9 @@ inputs:
     type: int
     label: "Order of the Butterworth filter"
   filter_function:
-    type: string
+    type:
+      type: enum
+      symbols: ["filtfilt", "lfilter", "sosfiltfilt"]
     label: "Filter function to use"
   wavelet_output_file:
     type: string
@@ -39,12 +44,10 @@ inputs:
 outputs:
   filtered_output_file:
     type: File
-    outputBinding:
-      glob: "$(step_butterworth_filter/output_file)"
+    outputSource: step_butterworth_filter/output_file
   wavelet_output_file:
     type: File
-    outputBinding:
-      glob: "$(step_wavelet_transform/output_file)"
+    outputSource: step_wavelet_transform/output_file
 
 steps:
   step_butterworth_filter:
@@ -56,7 +59,7 @@ steps:
       lowpass_frequency: lowpass_frequency
       order: order
       filter_function: filter_function
-      output_file: "filtered_output.nix"
+      output_file: butterworth_output_file
     out: [output_file]
 
   step_wavelet_transform:

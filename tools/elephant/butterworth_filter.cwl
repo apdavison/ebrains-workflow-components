@@ -9,7 +9,8 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant
+    # dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant
+    dockerImageId: elephant:latest
 
 doc:
      - "Butterworth filtering"
@@ -30,7 +31,7 @@ inputs:
     inputBinding:
       prefix: --input_format
   output_file:
-    type: string
+    type: File
     label: "Path to the output file"
     inputBinding:
       prefix: --output_file
