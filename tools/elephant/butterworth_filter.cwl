@@ -88,6 +88,16 @@ inputs:
     default: 0
     inputBinding:
       prefix: --analogsignal_idx
+  block_name:
+    type: string?
+    label: "Name of the block to process (optional)"
+    inputBinding:
+      prefix: --block_name
+  action:
+    type: string
+    label: "Action on how to store the results with respect to the original data"
+    inputBinding:
+      prefix: --action
 #  include:
 #    type: string?
 #    label: "A pseudo-Python expression that indicates which signals to process with the filter."

@@ -3,7 +3,8 @@
       path: ./l101210-001_small_cut_60.0s.nix
    input_format: "NixIO"
    output_format: "NixIO"
-   butterworth_output_file: "./butterworth_output.nix"
+   butterworth_output_file: "butterworth_output.nix"
+   butterworth_output_format: "NixIO"
    highpass_frequency: "0.5 Hz"
    lowpass_frequency: "30.0 Hz"
    order: 4

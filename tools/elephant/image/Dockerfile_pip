@@ -10,6 +10,8 @@ COPY butterworth_filter_cli.py butterworth_filter_cli.py
 RUN chmod +x butterworth_filter_cli.py
 COPY wavelet_transform_cli.py wavelet_transform_cli.py
 RUN chmod +x wavelet_transform_cli.py
+COPY utils.py utils.py
+RUN chmod +x utils.py
 
 ENV PATH="/usr/src/app:$PATH"
 

@@ -12,6 +12,11 @@ inputs:
   butterworth_output_file:
     type: string?
     label: "Output file for Butterworth filter"
+  butterworth_output_format:
+    type:
+      type: enum
+      symbols: ["NWBIO", "NixIO"]
+    label: "Format of the Butterworth filter output file"
   highpass_frequency:
     type: string
     label: "High-pass cut-off frequency"
@@ -26,6 +31,9 @@ inputs:
       type: enum
       symbols: ["filtfilt", "lfilter", "sosfiltfilt"]
     label: "Filter function to use"
+  action:
+    type: string
+    label: "Action on how to store the results with respect to the original data"
   wavelet_output_file:
     type: string
     label: "Output file for wavelet transform"
@@ -55,11 +63,13 @@ steps:
     in:
       input_file: input_file
       input_format: input_format
+      output_file: butterworth_output_file
+      output_format: butterworth_output_format
       highpass_frequency: highpass_frequency
       lowpass_frequency: lowpass_frequency
       order: order
       filter_function: filter_function
-      output_file: butterworth_output_file
+      action: action
     out: [output_file]
 
   step_wavelet_transform:
