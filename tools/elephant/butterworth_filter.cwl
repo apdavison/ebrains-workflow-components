@@ -31,7 +31,7 @@ inputs:
     inputBinding:
       prefix: --input_format
   output_file:
-    type: File
+    type: string?
     label: "Path to the output file"
     inputBinding:
       prefix: --output_file

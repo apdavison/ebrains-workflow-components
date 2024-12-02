@@ -10,7 +10,7 @@ inputs:
     type: string?
     label: "Format of the input data"
   butterworth_output_file:
-    type: File
+    type: string?
     label: "Output file for Butterworth filter"
   highpass_frequency:
     type: string
