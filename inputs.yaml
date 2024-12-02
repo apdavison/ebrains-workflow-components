@@ -10,7 +10,8 @@
    order: 4
    filter_function: "filtfilt"
    action: "new"
-   wavelet_output_file: "output_wavelet.nix"
+   wavelet_output_file: "output_wavelet.npz"
    frequency: 5.0
    n_cycles: 6.0
    sampling_frequency: 1.0
+   visualization_plots: False

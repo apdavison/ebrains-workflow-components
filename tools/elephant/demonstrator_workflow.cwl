@@ -48,6 +48,10 @@ inputs:
     type: float?
     label: "Sampling rate of the input data"
     default: 1.0
+  visualization_plots:
+    type: boolean?
+    label: "Generate visualization plots for each input signal"
+    default: true
 
 outputs:
   filtered_output_file:
@@ -81,4 +85,5 @@ steps:
       frequency: frequency
       n_cycles: n_cycles
       sampling_frequency: sampling_frequency
+      visualization_plots: visualization_plots
     out: [output_file]

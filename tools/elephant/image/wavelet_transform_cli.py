@@ -22,6 +22,7 @@ def freq_list(value):
 
         return np.arange(start, stop, step, dtype=float)
 
+
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--input_file", nargs="?", type=Path, required=True, help="path with file with the input data")
 CLI.add_argument("--input_format", nargs="?", type=str, default=None, help="format of the input data")
@@ -60,6 +61,7 @@ def _plot_wavelet_transform(output_path,
 
     fig.savefig(output_path / f"wavelet_spectrum_{signal_index}.pdf",
                 format="pdf")
+
 
 def _save_wavelet_transform(transformed_signals, output_file,
                             frequency):
@@ -117,7 +119,8 @@ def wavelet_transform(
 
     # Save the wavelet coefficients to a pickle file
     _save_wavelet_transform(transformed_signals, output_file, frequency)
-        
+
+
 if __name__ == "__main__":
     args, unknown = CLI.parse_known_args()
     wavelet_transform(**vars(args))
