@@ -110,3 +110,6 @@ outputs:
     type: stdout
   output_stderr:
     type: stderr
+
+requirements:
+  InlineJavascriptRequirement: {}
