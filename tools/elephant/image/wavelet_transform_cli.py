@@ -38,8 +38,7 @@ CLI.add_argument("--sampling_frequency", nargs="?", type=float, default=1.0, hel
 CLI.add_argument("--zero_padding", nargs="?", type=bool, default=True, help="Specifies whether the data length is extended by padding zeros (default: True)")
 
 
-def _plot_wavelet_transform(output_path,
-                            input_signal,
+def _plot_wavelet_transform(input_signal,
                             wavelet_transform_signal,
                             signal_index,
                             frequency):
@@ -59,7 +58,7 @@ def _plot_wavelet_transform(output_path,
     ax.set_xlabel(f"Time [{time_units}]")
     ax.set_title(f"Wavelet Spectrum - Signal {signal_index}")
 
-    fig.savefig(output_path / f"wavelet_spectrum_{signal_index}.pdf",
+    fig.savefig(f"wavelet_spectrum_{signal_index}.pdf",
                 format="pdf")
 
 
@@ -109,16 +108,14 @@ def wavelet_transform(
         for signal in signals
     ]
 
-    # Plot visualization of the transformed signals
-    if visualization_plots:
-        output_path = output_file.parent
-        for index, (input_signal, wt_signal) in \
-                enumerate(zip(signals, transformed_signals)):
-            _plot_wavelet_transform(output_path, input_signal, wt_signal,
-                                    index, frequency)
-
     # Save the wavelet coefficients to a pickle file
     _save_wavelet_transform(transformed_signals, output_file, frequency)
+
+    # Plot visualization of the transformed signals
+    for index, (input_signal, wt_signal) in \
+            enumerate(zip(signals, transformed_signals)):
+        _plot_wavelet_transform(input_signal, wt_signal,
+                                index, frequency)
 
 
 if __name__ == "__main__":

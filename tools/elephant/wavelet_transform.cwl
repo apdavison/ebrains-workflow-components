@@ -9,7 +9,8 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant:latest
+    #dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant:latest
+    dockerImageId: elephant:latest
 
 doc:
      - "Wavelet transform"
@@ -62,12 +63,6 @@ inputs:
     inputBinding:
       prefix: --frequency
     label: "Center frequency of the Morlet wavelet in Hz"
-  visualization_plots:
-    type: boolean?
-    label: "Generate visualization plots for each input signal. It is averaged over channels (default: True)"
-    default: true
-    inputBinding:
-      prefix: --visualization_plots
   n_cycles:
     type: float?
     label: "Size of the mother wavelet (default: 6.0)"
@@ -92,6 +87,10 @@ outputs:
     type: File
     outputBinding:
       glob: "$(inputs.output_file)"
+  visualization_plots_pdf:
+    type: File[]
+    outputBinding:
+      glob: "*.pdf"
   output_stdout:
     type: stdout
   output_stderr:

@@ -48,10 +48,6 @@ inputs:
     type: float?
     label: "Sampling rate of the input data"
     default: 1.0
-  visualization_plots:
-    type: boolean?
-    label: "Generate visualization plots for each input signal"
-    default: true
 
 outputs:
   filtered_output_file:
@@ -60,7 +56,9 @@ outputs:
   wavelet_output_file:
     type: File
     outputSource: step_wavelet_transform/output_file
-
+  visualization_plots_pdf:
+    type: File[]
+    outputSource: step_wavelet_transform/visualization_plots_pdf
 steps:
   step_butterworth_filter:
     run: ./butterworth_filter.cwl
@@ -85,5 +83,4 @@ steps:
       frequency: frequency
       n_cycles: n_cycles
       sampling_frequency: sampling_frequency
-      visualization_plots: visualization_plots
-    out: [output_file]
+    out: [output_file, visualization_plots_pdf]

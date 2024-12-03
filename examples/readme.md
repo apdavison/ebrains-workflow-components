@@ -21,6 +21,7 @@ To run the workflow, follow these steps:
 6. The workflow will produce the following results, files:
     - `butterworth_output.nix`: The output file from the Butterworth filter process.
     - `output_wavelet.npz`: The output file from the Wavelet transform process.
+    - `wavelet_spectrum_{signal_index}.pdf` files containing the spectrum
 
 ## Requirements
 
