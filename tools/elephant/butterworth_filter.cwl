@@ -9,7 +9,7 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant
+    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant:latest
 
 doc:
      - "Butterworth filtering"
