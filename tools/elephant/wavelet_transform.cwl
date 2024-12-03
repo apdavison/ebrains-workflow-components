@@ -9,8 +9,7 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    #dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant
-    dockerImageId: elephant:latest
+    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant
 
 doc:
      - "Wavelet transform"
