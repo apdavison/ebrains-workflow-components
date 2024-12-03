@@ -15,7 +15,9 @@ We are just getting started!
 
 ## Documentation
 
-Coming soon.
+### Demonstrator workflow
+
+[Readme](examples/readme.md)
 
 ## License
 
