@@ -31,6 +31,21 @@ inputs:
       type: enum
       symbols: ["filtfilt", "lfilter", "sosfiltfilt"]
     label: "Filter function to use"
+  block_idx:
+    type: int?
+    label: "Index of the block to process (default: 0)"
+    default: 0
+  segment_idx:
+    type: int?
+    label: "Index of the segment to process (default: 0)"
+    default: 0
+  analogsignal_idx:
+    type: int?
+    label: "Index of the analog signal to process (default: 0)"
+    default: 0
+  block_name:
+    type: string?
+    label: "Name of the block to process (optional)"
   action:
     type: string
     label: "Action on how to store the results with respect to the original data"
@@ -48,6 +63,10 @@ inputs:
     type: float?
     label: "Sampling rate of the input data"
     default: 1.0
+  zero_padding:
+    type: boolean?
+    label: "Specifies whether the data length is extended by padding zeros (default: True)"
+    default: true
 
 outputs:
   filtered_output_file:
@@ -71,6 +90,10 @@ steps:
       lowpass_frequency: lowpass_frequency
       order: order
       filter_function: filter_function
+      block_idx: block_idx
+      block_name: block_name
+      segment_idx: segment_idx
+      analogsignal_idx: analogsignal_idx
       action: action
     out: [output_file]
 
@@ -83,4 +106,5 @@ steps:
       frequency: frequency
       n_cycles: n_cycles
       sampling_frequency: sampling_frequency
+      zero_padding: zero_padding
     out: [output_file, visualization_plots_pdf]

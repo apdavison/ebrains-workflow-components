@@ -75,6 +75,11 @@ inputs:
     default: 0
     inputBinding:
       prefix: --block_idx
+  block_name:
+    type: string?
+    label: "Name of the block to process (optional)"
+    inputBinding:
+      prefix: --block_name
   segment_idx:
     type: int?
     label: "Index of the segment to process (default: 0)"
@@ -87,11 +92,6 @@ inputs:
     default: 0
     inputBinding:
       prefix: --analogsignal_idx
-  block_name:
-    type: string?
-    label: "Name of the block to process (optional)"
-    inputBinding:
-      prefix: --block_name
   action:
     type: string
     label: "Action on how to store the results with respect to the original data"
