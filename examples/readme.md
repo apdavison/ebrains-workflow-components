@@ -9,7 +9,7 @@ To run the workflow, follow these steps:
    docker pull docker-registry.ebrains.eu/workflow-components/elephant:latest
    ```
 
-3. Place the `.nix` file into the current directory. This workflow was tested with `l101210-001_small_cut_60.0s.nix`.
+3. Place the `.nix` file into the current directory. This workflow was tested with `l101210-001_small_cut_60.0s.nix`. The file is uploaded to the bucket of [EBRAINS 2.0 WP4 Task 4.3](https://wiki.ebrains.eu/bin/view/Collabs/ebrains-2-0-wp4-task-4-3/)
 4. Prepare your `inputs.yaml` file with the required parameters for the workflow
 
 5. Run the workflow using cwl-runner:
