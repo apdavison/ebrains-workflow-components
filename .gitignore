@@ -5,8 +5,11 @@
 # files
 # IGOR Pro Binary Wave Data format.
 *.ibw 
+*.nix
 # result files
 *.json 
+*.npz
+*.pdf
 
 # stdout and stderr files
 **/o.txt
@@ -14,3 +17,4 @@
 
 # Python
 __pycache__
+*.ipynb
