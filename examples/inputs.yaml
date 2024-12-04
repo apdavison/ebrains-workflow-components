@@ -8,11 +8,16 @@
    lowpass_frequency: "110.0 Hz"
    order: 4
    filter_function: "filtfilt"
+   # Index of the block to process
    block_idx: 0
+   # Index of the segment to process
    segment_idx: 0
+   # Index of the analog signal to process
    analogsignal_idx: 1
+   # Action to perform (new file or add to existing file)
    action: "new"
    wavelet_output_file_path: "output_wavelet.npz"
+   # Frequency range for wavelet analysis, start,stop,step
    frequency: "30:50:20"
    n_cycles: 6.0
    sampling_frequency: 1000

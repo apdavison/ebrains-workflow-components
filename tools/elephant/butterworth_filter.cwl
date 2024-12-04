@@ -97,9 +97,6 @@ inputs:
     label: "Action on how to store the results with respect to the original data"
     inputBinding:
       prefix: --action
-#  include:
-#    type: string?
-#    label: "A pseudo-Python expression that indicates which signals to process with the filter."
 outputs:
   butterworth_output_file:
     type: File
