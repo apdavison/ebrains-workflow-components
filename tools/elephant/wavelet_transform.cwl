@@ -58,7 +58,7 @@ inputs:
     inputBinding:
       prefix: --analog_signal_index
   frequency:
-    type: float?
+    type: string?
     inputBinding:
       prefix: --frequency
     label: "Center frequency of the Morlet wavelet in Hz"

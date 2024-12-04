@@ -53,7 +53,7 @@ inputs:
     type: string
     label: "Output file for wavelet transform"
   frequency:
-    type: float
+    type: string
     label: "Center frequency of the Morlet wavelet"
   n_cycles:
     type: float?

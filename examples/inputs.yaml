@@ -5,15 +5,15 @@
    butterworth_output_file: "butterworth_output.nix"
    butterworth_output_format: "NixIO"
    highpass_frequency: "0.5 Hz"
-   lowpass_frequency: "30.0 Hz"
+   lowpass_frequency: "110.0 Hz"
    order: 4
    filter_function: "filtfilt"
    block_idx: 0
    segment_idx: 0
-   analogsignal_idx: 0
+   analogsignal_idx: 1
    action: "new"
    wavelet_output_file: "output_wavelet.npz"
-   frequency: 5.0
+   frequency: "30:50:20"
    n_cycles: 6.0
-   sampling_frequency: 1.0
+   sampling_frequency: 1000
    zero_padding: true
