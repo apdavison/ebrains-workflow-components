@@ -6,6 +6,7 @@
 # IGOR Pro Binary Wave Data format.
 *.ibw 
 *.nix
+*.ns2
 # result files
 *.json 
 *.npz

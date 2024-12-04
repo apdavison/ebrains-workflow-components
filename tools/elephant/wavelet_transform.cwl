@@ -9,7 +9,8 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant:latest
+    #dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant:latest
+    dockerImageId: elephant:latest
 
 doc:
      - "Wavelet transform"
@@ -25,7 +26,12 @@ inputs:
     inputBinding:
       prefix: --input_file
   input_format:
-    type: string?
+    type:
+      - "null"
+      - type: enum
+        symbols:
+          - NWBIO
+          - NixIO
     label: "Format of the input data, as a Neo IO class name (optional; TODO: use openMINDS content-types instead?)"
     inputBinding:
       prefix: --input_format
@@ -80,6 +86,16 @@ inputs:
     default: true
     inputBinding:
       prefix: --zero_padding
+  start_time:
+    type: float?
+    label: "Start time of the signal slice in seconds"
+    inputBinding:
+      prefix: --start_time
+  stop_time:
+    type: float?
+    label: "Stop time of the signal slice in seconds"
+    inputBinding:
+      prefix: --stop_time
 
 outputs:
   wavelet_transform_output_file:

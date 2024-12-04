@@ -67,6 +67,14 @@ inputs:
     type: boolean?
     label: "Specifies whether the data length is extended by padding zeros (default: True)"
     default: true
+  start_time:
+    type: float?
+    label: "Start time of the signal slice in seconds"
+    default: null
+  stop_time:
+    type: float?
+    label: "Stop time of the signal slice in seconds"
+    default: null
 
 outputs:
   filtered_output_file:
@@ -101,10 +109,12 @@ steps:
     run: ./wavelet_transform.cwl
     in:
       input_file: step_butterworth_filter/butterworth_output_file
-      input_format: input_format
+      input_format: butterworth_output_format
       output_file: wavelet_output_file_path
       frequency: frequency
       n_cycles: n_cycles
       sampling_frequency: sampling_frequency
       zero_padding: zero_padding
+      start_time: start_time
+      stop_time: stop_time
     out: [wavelet_transform_output_file, visualization_plots_pdf]

@@ -1,4 +1,5 @@
 from pathlib import Path
+from os.path import splitext
 from typing import List, Optional, Union
 import quantities as pq
 import neo
@@ -137,6 +138,20 @@ def select_data(
             ) from e
 
 
+def _get_blackrock_io(input_file):
+    data_full_path, file_ending = splitext(input_file) # TODO: change to Pathlib
+    if file_ending == '.nev':
+        nsx_to_load = 2
+    elif file_ending == '.ns2':
+        nsx_to_load = 2
+    elif file_ending == '.ns6':
+        nsx_to_load = 6
+    else:
+        raise ValueError('The inputfile is not of the following formats:.nev,.ns2 or .ns6')
+
+    return neo.io.BlackrockIO(filename=data_full_path, nsx_to_load=nsx_to_load)
+
+
 def load_data(
     input_file: Union[str, Path],
     input_format: Optional[str] = None,
@@ -188,17 +203,21 @@ def load_data(
                 f"Please specify a valid input format, provided: {input_format}"
             )
     else:
-        flags = ["ro"] if input_format == "NixIO" else []
-        try:
-            io = getattr(neo.io, input_format)(input_file, *flags)
-        except AttributeError:
-            raise ValueError(
-                f"Input_format is not supported by neo, provided: {input_format}"
-            )
-        except InvalidFile:
-            raise ValueError(
-                "input_file and input_format do not match, please provide valid file and correct input format"
-            )
+        if input_format == "BlackrockIO":
+            io = _get_blackrock_io(input_file)
+        else:
+            flags = ["ro"] if input_format == "NixIO" else []
+            try:
+                io = getattr(neo.io, input_format)(input_file, *flags)
+            except AttributeError:
+                raise ValueError(
+                    f"Input_format is not supported by neo, provided: {input_format}"
+                )
+            except InvalidFile:
+                raise ValueError(
+                    "input_file and input_format do not match, please provide valid file and correct input format"
+                )
+
     if block_index and block_name:
         raise ValueError("Can not load by name and index simultaneously")
     elif block_index is not None:

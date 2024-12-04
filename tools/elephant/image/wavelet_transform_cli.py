@@ -4,9 +4,10 @@ import argparse
 from pathlib import Path
 
 import numpy as np
+import quantities as pq
 import matplotlib.pyplot as plt
 import elephant
-from utils import load_data, select_data, _parse_slice
+from utils import load_data, select_data
 
 
 def freq_list(value):
@@ -36,6 +37,8 @@ CLI.add_argument("--frequency", nargs="?", type=freq_list, required=True, help="
 CLI.add_argument("--n_cycles", nargs="?", type=float, default=6.0, help="Size of the mother wavelet (default: 6.0)")
 CLI.add_argument("--sampling_frequency", nargs="?", type=float, default=1.0, help="Sampling rate of the input data in Hz (default: 1.0)")
 CLI.add_argument("--zero_padding", nargs="?", type=bool, default=True, help="Specifies whether the data length is extended by padding zeros (default: True)")
+CLI.add_argument("--start_time", nargs="?", type=float, default=None, help="Start time of the signal slice in seconds")
+CLI.add_argument("--stop_time", nargs="?", type=float, default=None, help="Stop time of the signal slice in seconds")
 
 
 def _plot_wavelet_transform(input_signal,
@@ -81,6 +84,8 @@ def wavelet_transform(
     n_cycles,
     sampling_frequency,
     zero_padding,
+    start_time,
+    stop_time,
 ):
     # Load Block from which AnalogSignals will be selected
     block = load_data(
@@ -94,6 +99,9 @@ def wavelet_transform(
     signals = select_data(
         block, segment_index=segment_index, analog_signal_index=analog_signal_index
     )
+    # To avoid using too much memory, slice the signals if start and stop times are provided
+    if start_time is not None and stop_time is not None:
+        signals = [signal.time_slice(start_time * pq.s, stop_time * pq.s) for signal in signals]
 
     # Iterate over all loaded AnalogSignals
     transformed_signals = [
