@@ -49,7 +49,7 @@ inputs:
   action:
     type: string
     label: "Action on how to store the results with respect to the original data"
-  wavelet_output_file:
+  wavelet_output_file_path:
     type: string
     label: "Output file for wavelet transform"
   frequency:
@@ -71,10 +71,10 @@ inputs:
 outputs:
   filtered_output_file:
     type: File
-    outputSource: step_butterworth_filter/output_file
+    outputSource: step_butterworth_filter/butterworth_output_file
   wavelet_output_file:
     type: File
-    outputSource: step_wavelet_transform/output_file
+    outputSource: step_wavelet_transform/wavelet_transform_output_file
   visualization_plots_pdf:
     type: File[]
     outputSource: step_wavelet_transform/visualization_plots_pdf
@@ -95,16 +95,16 @@ steps:
       segment_idx: segment_idx
       analogsignal_idx: analogsignal_idx
       action: action
-    out: [output_file]
+    out: [butterworth_output_file]
 
   step_wavelet_transform:
     run: ./wavelet_transform.cwl
     in:
-      input_file: step_butterworth_filter/output_file
+      input_file: step_butterworth_filter/butterworth_output_file
       input_format: input_format
-      output_file: wavelet_output_file
+      output_file: wavelet_output_file_path
       frequency: frequency
       n_cycles: n_cycles
       sampling_frequency: sampling_frequency
       zero_padding: zero_padding
-    out: [output_file, visualization_plots_pdf]
+    out: [wavelet_transform_output_file, visualization_plots_pdf]

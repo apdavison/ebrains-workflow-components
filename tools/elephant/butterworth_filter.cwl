@@ -101,7 +101,7 @@ inputs:
 #    type: string?
 #    label: "A pseudo-Python expression that indicates which signals to process with the filter."
 outputs:
-  output_file:
+  butterworth_output_file:
     type: File
     outputBinding:
       glob: "$(inputs.output_file)"

@@ -12,7 +12,7 @@
    segment_idx: 0
    analogsignal_idx: 1
    action: "new"
-   wavelet_output_file: "output_wavelet.npz"
+   wavelet_output_file_path: "output_wavelet.npz"
    frequency: "30:50:20"
    n_cycles: 6.0
    sampling_frequency: 1000

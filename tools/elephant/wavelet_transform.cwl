@@ -82,7 +82,7 @@ inputs:
       prefix: --zero_padding
 
 outputs:
-  output_file:
+  wavelet_transform_output_file:
     type: File
     outputBinding:
       glob: "$(inputs.output_file)"
