@@ -9,8 +9,8 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    #dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant:latest
-    dockerImageId: elephant:latest
+    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant:latest
+
 doc:
      - "Butterworth filtering"
      - "Detailed function documentation: https://elephant.readthedocs.io/en/latest/reference/_toctree/signal_processing/elephant.signal_processing.butter.html"
