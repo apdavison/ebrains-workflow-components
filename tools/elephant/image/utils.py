@@ -329,6 +329,10 @@ def save_data(
         saved_block = neo.Block()
         saved_block.add(data)
 
+    output_dir = output_file.parent
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True)
+
     if output_format == "NixIO":
         with neo.NixIO(
             output_file, mode="ow" if action in ["replace", "new"] else "rw"

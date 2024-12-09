@@ -67,6 +67,9 @@ def _plot_wavelet_transform(input_signal,
 
 def _save_wavelet_transform(transformed_signals, output_file,
                             frequency):
+    output_dir = output_file.parent
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True)
     arrays = {str(i): array for i, array in enumerate(transformed_signals)}
     np.savez(**arrays, file=output_file, frequency=frequency)
 

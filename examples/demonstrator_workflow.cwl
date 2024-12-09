@@ -3,12 +3,18 @@ cwlVersion: v1.2
 class: Workflow
 
 inputs:
+  input_dataset:
+    type: string
+    label: "UUID of dataset containing input file"
   input_file:
-    type: File
-    label: "Input file containing sampled signals"
+    type: string
+    label: "Path of input file containing sampled signals within dataset"
   input_format:
     type: string?
     label: "Format of the input data"
+  token:
+    type: string
+    label: "EBRAINS IAM token for downloading from KG and uploading to Bucket"
   butterworth_output_file:
     type: string?
     label: "Output file for Butterworth filter"
@@ -75,6 +81,12 @@ inputs:
     type: float?
     label: "Stop time of the signal slice in seconds"
     default: null
+  output_folder:
+    type: string
+    label: "Output folder within Bucket"
+  bucket_id:
+    type: string
+    label: ID of the bucket (collab) to which outputs should be uploaded
 
 outputs:
   filtered_output_file:
@@ -86,11 +98,20 @@ outputs:
   visualization_plots_pdf:
     type: File[]
     outputSource: step_wavelet_transform/visualization_plots_pdf
+
 steps:
-  step_butterworth_filter:
-    run: ./butterworth_filter.cwl
+  download_data:
+    run: ../tools/kg/download_KG_datafile.cwl
     in:
-      input_file: input_file
+      dataset_version_uuid: input_dataset
+      datafile_path: input_file
+      token: token
+    out: [downloaded_data]
+
+  step_butterworth_filter:
+    run: ../tools/elephant/butterworth_filter.cwl
+    in:
+      input_file: download_data/downloaded_data
       input_format: input_format
       output_file: butterworth_output_file
       output_format: butterworth_output_format
@@ -106,7 +127,7 @@ steps:
     out: [butterworth_output_file]
 
   step_wavelet_transform:
-    run: ./wavelet_transform.cwl
+    run: ../tools/elephant/wavelet_transform.cwl
     in:
       input_file: step_butterworth_filter/butterworth_output_file
       input_format: butterworth_output_format
@@ -118,3 +139,37 @@ steps:
       start_time: start_time
       stop_time: stop_time
     out: [wavelet_transform_output_file, visualization_plots_pdf]
+
+  push_bucket:
+    run: ../tools/storage/bucket_push_file.cwl
+    in:
+      token: token
+      bucket_id: bucket_id
+      target_folder: output_folder
+      files: step_wavelet_transform/visualization_plots_pdf
+    out: [out]
+
+
+
+s:identifier: https://kg.ebrains.eu/api/instances/f907886f-39cd-405e-84fb-1b12fc5ef24f
+s:keywords: ["data analysis"]
+s:author:
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0001-7292-1982
+    s:name: Moritz Kern
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0003-0503-5264
+    s:name: Cristiano Köhler
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0002-4793-7541
+    s:name: Andrew P. Davison
+s:codeRepository: https://gitlab.ebrains.eu/workflows/components
+s:version: "v0.1"
+s:dateCreated: "2024-12-10"
+s:programmingLanguage: Python
+
+$namespaces:
+ s: https://schema.org/
+
+$schemas:
+ - https://schema.org/version/latest/schemaorg-current-http.rdf

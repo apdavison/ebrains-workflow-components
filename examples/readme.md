@@ -15,7 +15,7 @@ To run the workflow, follow these steps:
 5. Run the workflow using cwl-runner:
 
    ```bash
-   cwl-runner ../tools/elephant/demonstrator_workflow.cwl inputs.yaml
+   cwl-runner demonstrator_workflow.cwl inputs.yaml
    ```
 
 6. The workflow will produce the following results, files:

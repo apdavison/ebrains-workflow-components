@@ -9,7 +9,7 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant:latest
+    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant@sha256:319c262d91f1a8d0ea1b9be70f6c705f85d9d61828d486d91de1fbf784d5cf36
 
 doc:
      - "Wavelet transform"
@@ -112,3 +112,25 @@ outputs:
 
 requirements:
   InlineJavascriptRequirement: {}
+
+
+
+s:identifier: https://kg.ebrains.eu/api/instances/2f3c47fb-c267-43d0-afa1-b4e04898f8f2
+s:keywords: ["data analysis"]
+s:author:
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0001-7292-1982
+    s:name: Moritz Kern
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0003-0503-5264
+    s:name: Cristiano Köhler
+s:codeRepository: https://gitlab.ebrains.eu/workflows/components
+s:version: "v0.1"
+s:dateCreated: "2024-12-10"
+s:programmingLanguage: Python
+
+$namespaces:
+ s: https://schema.org/
+
+$schemas:
+ - https://schema.org/version/latest/schemaorg-current-http.rdf

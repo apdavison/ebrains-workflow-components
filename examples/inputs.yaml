@@ -1,27 +1,29 @@
-   input_file:
-      class: File
-      path: ./i140703-001.ns2
-   input_format: "BlackrockIO"
-   butterworth_output_file: "butterworth_output.nix"
-   butterworth_output_format: "NixIO"
-   highpass_frequency: "0.5 Hz"
-   lowpass_frequency: "110.0 Hz"
-   order: 4
-   filter_function: "filtfilt"
-   # Index of the block to process
-   block_idx: 0
-   # Index of the segment to process
-   segment_idx: 0
-   # Index of the analog signal to process
-   analogsignal_idx: 1
-   # Action to perform (new file or add to existing file)
-   action: "new"
-   wavelet_output_file_path: "output_wavelet.npz"
-   # Frequency range for wavelet analysis, start,stop,step
-   frequency: "10:30:2"
-   n_cycles: 6.0
-   sampling_frequency: 1000
-   zero_padding: true
-   # Start and stop time in seconds
-   start_time: 0
-   stop_time: 60
+input_dataset: "b23a87a2-3079-46ff-9649-d6a521952e4a"
+input_file: "N/i140703-001.ns2"
+input_format: "BlackrockIO"
+butterworth_output_file: "butterworth_output.nix"
+butterworth_output_format: "NixIO"
+highpass_frequency: "0.5 Hz"
+lowpass_frequency: "110.0 Hz"
+order: 4
+filter_function: "filtfilt"
+# Index of the block to process
+block_idx: 0
+# Index of the segment to process
+segment_idx: 0
+# Index of the analog signal to process
+analogsignal_idx: 1
+# Action to perform (new file or add to existing file)
+action: "new"
+wavelet_output_file_path: "output_wavelet.npz"
+# Frequency range for wavelet analysis, start,stop,step
+frequency: "10:30:2"
+n_cycles: 6.0
+sampling_frequency: 1000
+zero_padding: true
+# Start and stop time in seconds
+start_time: 0
+stop_time: 60
+output_folder: results/i140703-001
+bucket_id: "ebrains-2-0-wp4-task-4-3"
+token: "eyJ-..."
