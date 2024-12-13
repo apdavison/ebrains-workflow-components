@@ -1,12 +1,16 @@
 #!/usr/bin/env cwltool
 
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
 baseCommand: bucket_push_file.py
 label: "Push a folder to an EBRAINS Collaboratory Bucket"
+requirements:
+  NetworkAccess:
+     networkAccess: true
 hints:
   DockerRequirement:
-    dockerPull: docker-registry.ebrains.eu/workflow-components/storage@sha256:495dddd4d83be3e7986bd7cc6c004f6b45c569dcb2e519962bf061e9c7b712cd
+    dockerPull: docker-registry.ebrains.eu/workflow-components/storage@sha256:72f199ab788325bec1a4588789e85f908cbba34db9f46016dfbca5b03dd4dcc7
+    #dockerPull: docker-registry.ebrains.eu/workflow-components/storage:local
 
 inputs:
   bucket_id:
@@ -28,10 +32,18 @@ inputs:
     inputBinding:
       position: 4
 
-stdout: output.txt
 outputs:
-  out:
-    type: stdout
+  remote_files:
+    type:
+      type: array
+      items:
+        type: record
+        fields:
+          location: string
+          basename: string?
+          checksum: string?
+          size: long?
+          format: string?
 
 
 s:identifier: https://kg.ebrains.eu/api/instances/459b415b-9b4a-4306-a69d-50b336d2510e

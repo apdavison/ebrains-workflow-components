@@ -98,6 +98,18 @@ outputs:
   visualization_plots_pdf:
     type: File[]
     outputSource: step_wavelet_transform/visualization_plots_pdf
+  remote_files:
+    type:
+      type: array
+      items:
+        type: record
+        fields:
+          location: string
+          basename: string?
+          checksum: string?
+          size: long?
+          format: string?
+    outputSource: push_bucket/remote_files
 
 steps:
   download_data:
@@ -147,7 +159,7 @@ steps:
       bucket_id: bucket_id
       target_folder: output_folder
       files: step_wavelet_transform/visualization_plots_pdf
-    out: [out]
+    out: [remote_files]
 
 
 
