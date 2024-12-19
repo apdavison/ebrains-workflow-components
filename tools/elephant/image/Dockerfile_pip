@@ -2,11 +2,16 @@ FROM python:3.11
 
 WORKDIR /usr/src/app
 
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
 RUN pip install cwltool
 
 COPY butterworth_filter_cli.py butterworth_filter_cli.py
 RUN chmod +x butterworth_filter_cli.py
+COPY wavelet_transform_cli.py wavelet_transform_cli.py
+RUN chmod +x wavelet_transform_cli.py
+COPY utils.py utils.py
+RUN chmod +x utils.py
 
 ENV PATH="/usr/src/app:$PATH"
 

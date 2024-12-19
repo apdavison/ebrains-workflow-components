@@ -9,7 +9,7 @@ stderr: stderr.txt
 
 hints:
   DockerRequirement:
-    dockerImageId: docker-registry.ebrains.eu/workflow-components/elephant
+    dockerPull: docker-registry.ebrains.eu/workflow-components/elephant@sha256:319c262d91f1a8d0ea1b9be70f6c705f85d9d61828d486d91de1fbf784d5cf36
 
 doc:
      - "Butterworth filtering"
@@ -30,7 +30,7 @@ inputs:
     inputBinding:
       prefix: --input_format
   output_file:
-    type: string
+    type: string?
     label: "Path to the output file"
     inputBinding:
       prefix: --output_file
@@ -69,11 +69,36 @@ inputs:
     inputBinding:
       prefix: --filter_function
     label: "Filter function used"
-#  include:
-#    type: string?
-#    label: "A pseudo-Python expression that indicates which signals to process with the filter."
+  block_idx:
+    type: int?
+    label: "Index of the block to process (default: 0)"
+    default: 0
+    inputBinding:
+      prefix: --block_idx
+  block_name:
+    type: string?
+    label: "Name of the block to process (optional)"
+    inputBinding:
+      prefix: --block_name
+  segment_idx:
+    type: int?
+    label: "Index of the segment to process (default: 0)"
+    default: 0
+    inputBinding:
+      prefix: --segment_idx
+  analogsignal_idx:
+    type: int?
+    label: "Index of the analog signal to process (default: None)"
+    default: 0
+    inputBinding:
+      prefix: --analogsignal_idx
+  action:
+    type: string
+    label: "Action on how to store the results with respect to the original data"
+    inputBinding:
+      prefix: --action
 outputs:
-  output_file:
+  butterworth_output_file:
     type: File
     outputBinding:
       glob: "$(inputs.output_file)"
@@ -81,3 +106,27 @@ outputs:
     type: stdout
   output_stderr:
     type: stderr
+
+requirements:
+  InlineJavascriptRequirement: {}
+
+
+s:identifier: https://kg.ebrains.eu/api/instances/ded7f2cc-9479-491d-b1d7-7bdfc4148345
+s:keywords: ["data analysis"]
+s:author:
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0001-7292-1982
+    s:name: Moritz Kern
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0003-0503-5264
+    s:name: Cristiano Köhler
+s:codeRepository: https://gitlab.ebrains.eu/workflows/components
+s:version: "v0.1"
+s:dateCreated: "2024-12-10"
+s:programmingLanguage: Python
+
+$namespaces:
+ s: https://schema.org/
+
+$schemas:
+ - https://schema.org/version/latest/schemaorg-current-http.rdf

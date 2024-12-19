@@ -2,91 +2,73 @@
 
 import argparse
 from pathlib import Path
-from datetime import datetime
 
-import quantities as pq
-import neo
-import neo.io
 from elephant.signal_processing import butter
-
-
-def quantity(arg):
-    if not arg:
-        return None
-    value, unit = arg.split(" ")
-    return pq.Quantity(float(value), units=unit)
+from utils import load_data, save_data, prepare_data, select_data, quantity_arg
 
 
 CLI = argparse.ArgumentParser()
-CLI.add_argument("--input_file", nargs='?', type=Path, required=True,
-                 help="path with file with the input data")
-CLI.add_argument("--input_format", nargs='?', type=str,
-                 default=None,
-                 help="format of the input data")
-CLI.add_argument("--output_file", nargs='?', type=Path, required=True,
-                 help="path to the file where to write data")
-CLI.add_argument("--output_format", nargs='?', type=str, required=True,
-                 help="format of the output data")
-CLI.add_argument("--highpass_frequency", nargs='?', type=quantity,
-                 default=None,
-                 help="High-pass frequency cutoff")
-CLI.add_argument("--lowpass_frequency", nargs='?', type=quantity,
-                 default=None,
-                 help="Low-pass frequency cutoff")
-CLI.add_argument("--order", nargs='?', type=int, required=True,
-                 help="Filter order")
-CLI.add_argument("--filter_function", nargs='?', type=str, required=True,
-                 help="Filter function")
+CLI.add_argument("--input_file", nargs="?", type=Path, required=True, help="path with file with the input data")
+CLI.add_argument("--input_format", nargs="?", type=str, default=None, help="format of the input data")
+CLI.add_argument("--output_file", nargs="?", type=Path, required=True, help="path to the file where to write data")
+CLI.add_argument("--output_format", nargs="?", type=str, required=True, help="format of the output data")
+CLI.add_argument("--highpass_frequency", nargs="?", type=quantity_arg, default=None, help="High-pass frequency cutoff")
+CLI.add_argument("--lowpass_frequency", nargs="?", type=quantity_arg, default=None, help="Low-pass frequency cutoff")
+CLI.add_argument("--order", nargs="?", type=int, required=True, help="Filter order")
+CLI.add_argument("--filter_function", nargs="?", type=str, required=True, help="Filter function")
+CLI.add_argument("--block_index", nargs="?", type=int, default=0, help="Index of the block to process (default: 0)")
+CLI.add_argument("--block_name", nargs="?", type=str, default=None, help="Name of the block to process (optional)")
+CLI.add_argument("--segment_index", nargs="?", type=int, default=0, help="Index of the segment to process (default: 0)")
+CLI.add_argument("--analog_signal_index", nargs="?", type=int, default=0, help="Index of the analog signal to process (default: 0)")
+CLI.add_argument("--action", nargs="?", type=str, required=True, help="Action on how to store the results with respect to the original data")
 
 
-def load_data(input_file, input_format=None):
-    if not input_format:
-        candidate_io = neo.list_candidate_ios(input_file)
-        if candidate_io:
-            io_class = candidate_io[0]
-            flags = ['ro'] if io_class.__qualname__ == 'NixIO' else []
-            io = io_class(input_file, *flags)
-        else:
-            print(candidate_io)
-            raise ValueError("Please specify the input format.")
-    else:
-        flags = ['ro'] if input_format == 'NixIO' else []
-        io = getattr(neo.io, input_format)(input_file, *flags)
+def butterworth_filter(
+    input_file,
+    input_format,
+    output_file,
+    output_format,
+    highpass_frequency,
+    lowpass_frequency,
+    order,
+    filter_function,
+    block_index,
+    block_name,
+    segment_index,
+    analog_signal_index,
+    action,
+):
+    # Load Block from which AnalogSignals will be selected
+    block = load_data(
+        input_file,
+        input_format=input_format,
+        block_index=block_index,
+        block_name=block_name,
+    )
 
-    return io.read_block()
+    # Select AnalogSignals according to CLI parameters
+    signals = select_data(
+        block, segment_index=segment_index, analog_signal_index=analog_signal_index
+    )
 
+    # Iterate over all loaded AnalogSignals
+    filtered_signals = [
+        # Filter using Elephant butter function
+        butter(
+            signal=signal,
+            highpass_frequency=highpass_frequency,
+            lowpass_frequency=lowpass_frequency,
+            order=order,
+            filter_function=filter_function,
+        )
+        for signal in signals
+    ]
 
-def save_data(data, output_file, output_format):
-    saved_block = neo.Block()
-    segment = neo.Segment()
-    segment.analogsignals.append(data)
-    saved_block.add(segment)
+    # Prepare a Block to save the filtered AnalogSignals
+    new_block = prepare_data(block, analog_signal=filtered_signals, action=action)
 
-    if output_format == "NixIO":
-        neo.NixIO(output_file, 'ow').write_block(saved_block)
-    elif output_format == "NWBIO":
-        saved_block.annotate(session_start_time=datetime.now())
-        neo.NWBIO(output_file, 'w').write_block(saved_block)
-
-
-def butterworth_filter(input_file, input_format, output_file, output_format,
-                       highpass_frequency, lowpass_frequency, order,
-                       filter_function):
-
-    # Load AnalogSignal
-    block = load_data(input_file, input_format)
-    #TODO: advanced filtering function from CLI parameters
-    signal = block.segments[0].analogsignals[0]
-
-    # Filter using Elephant butter function
-    signal_filtered = butter(signal=signal,
-                             highpass_frequency=highpass_frequency,
-                             lowpass_frequency=lowpass_frequency,
-                             order=order,
-                             filter_function=filter_function)
-
-    # Save filtered AnalogSignal
-    save_data(signal_filtered, output_file, output_format)
+    # Save Block
+    save_data(new_block, output_file, output_format=output_format, action=action)
 
 
 if __name__ == "__main__":

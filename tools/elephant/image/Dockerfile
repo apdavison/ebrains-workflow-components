@@ -45,8 +45,12 @@ RUN { \
 && ln -s /opt/views/view /opt/view
 
 WORKDIR /usr/src/app
+
 COPY butterworth_filter_cli.py butterworth_filter_cli.py
 RUN chmod +x butterworth_filter_cli.py
+COPY wavelet_transform_cli.py wavelet_transform_cli.py
+RUN chmod +x wavelet_transform_cli.py
+
 ENV PATH="/usr/src/app:$PATH"
 
 ENTRYPOINT [ "/entrypoint.sh" ]
