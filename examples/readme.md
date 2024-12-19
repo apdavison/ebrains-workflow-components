@@ -2,23 +2,25 @@
 
 To run the workflow, follow these steps:
 
-1. Ensure you have cwl-runner installed
-2. Pull the latest Elephant Docker image:
+1. Ensure you have cwl-runner and a container management engine, such as Docker or Podman, installed.
 
-   ```bash
-   docker pull docker-registry.ebrains.eu/workflow-components/elephant:latest
-   ```
-
-3. Prepare your `inputs.yaml` file with the required parameters for the workflow.
+2. Prepare your `inputs.yaml` file with the required parameters for the workflow.
    In particular, you will need to provide a valid EBRAINS auth token.
+   This can be obtained from various places, such as the EBRAINS Lab or the KG Editor app.
 
-4. Run the workflow using cwl-runner:
+3. Run the workflow using cwl-runner:
 
    ```bash
    cwl-runner demonstrator_workflow.cwl inputs.yaml
    ```
 
-6. The workflow will produce the following results, files:
+   If using podman:
+
+   ```bash
+   cwl-runner --podman demonstrator_workflow.cwl inputs.yaml
+   ```
+
+4. The workflow will produce the following results, files:
     - `butterworth_output.nix`: The output file from the Butterworth filter process.
     - `output_wavelet.npz`: The output file from the Wavelet transform process.
     - `wavelet_spectrum_{signal_index}.pdf` files containing the spectrum
@@ -26,7 +28,7 @@ To run the workflow, follow these steps:
 ## Requirements
 
 - cwl-runner
-- Docker
+- Docker or Podman
 - Access to EBRAINS Docker registry
 
 ## Input Parameters
