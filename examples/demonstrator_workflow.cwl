@@ -2,6 +2,17 @@
 cwlVersion: v1.2
 class: Workflow
 
+label: Demonstrator workflow #001
+doc: |
+  This workflow demonstrates how to run a simple workflow, involving downloading experimental
+  data from an EBRAINS dataset, running a sequence of data analysis steps with Elephant,
+  then uploading the results to EBRAINS Bucket storage.
+
+  The data analysis steps are:
+
+  1. filter the recorded signal with a band-pass filter (Butterworth);
+  2. perform a frequency analysis using a wavelet transform, and plot the result.
+
 inputs:
   input_dataset:
     type: string

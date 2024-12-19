@@ -1,6 +1,15 @@
+# Information about the input file:
+#   If the input dataset has the URL
+#     https://search.kg.ebrains.eu/instances/<some_hexadecimal_string>
+#   then `input_dataset` should be set to "<some_hexadecimal_string>"
+#   and `input_file` to the relative path of the file within the dataset
+#   The file needs to be in a file that can be read by Neo,
+#   and `input_format` should be set to the name of the Neo IO module.
+#   (see https://neo.readthedocs.io/en/latest/iolist.html)
 input_dataset: "b23a87a2-3079-46ff-9649-d6a521952e4a"
 input_file: "N/i140703-001.ns2"
 input_format: "BlackrockIO"
+# Filter parameters
 butterworth_output_file: "butterworth_output.nix"
 butterworth_output_format: "NixIO"
 highpass_frequency: "0.5 Hz"
@@ -24,6 +33,10 @@ zero_padding: true
 # Start and stop time in seconds
 start_time: 0
 stop_time: 60
+# Where to save the results:
+#   If you have a collab workspace with the URL
+#     https://wiki.ebrains.eu/bin/view/Collabs/this-is-my-workspace
+#   then the bucket_id is "this-is-my-workspace"
 output_folder: results/i140703-001
-bucket_id: "ebrains-2-0-wp4-task-4-3"
-token: "eyJ-..."
+bucket_id: "<bucket_id_goes_here>"
+token: "eyJ..."
