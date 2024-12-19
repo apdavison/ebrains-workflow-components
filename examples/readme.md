@@ -11,16 +11,16 @@ To run the workflow, follow these steps:
 3. Run the workflow using cwl-runner:
 
    ```bash
-   cwl-runner demonstrator_workflow.cwl inputs.yaml
+   cwl-runner --outdir results demonstrator_workflow.cwl inputs.yaml
    ```
 
    If using podman:
 
    ```bash
-   cwl-runner --podman demonstrator_workflow.cwl inputs.yaml
+   cwl-runner --podman --outdir results demonstrator_workflow.cwl inputs.yaml
    ```
 
-4. The workflow will produce the following results, files:
+4. The workflow will produce the following files in the directory specified by `--outdir`:
     - `butterworth_output.nix`: The output file from the Butterworth filter process.
     - `output_wavelet.npz`: The output file from the Wavelet transform process.
     - `wavelet_spectrum_{signal_index}.pdf` files containing the spectrum
