@@ -1,9 +1,10 @@
 """
 Script to convert a CWL provenance Research Object to a JSON file that can be uploaded to the EBRAINS Prov API
 
-Copyright Andrew Davison, CNRS, 2022, 2023
+Copyright Andrew Davison, CNRS, 2022, 2023, 2025
 """
 
+import argparse
 import sys
 import os
 import re
@@ -14,6 +15,7 @@ from datetime import datetime
 from itertools import chain
 from rdflib import Graph, RDF, URIRef
 from rdflib.namespace import FOAF, PROV, RDFS
+import requests
 
 
 DEFAULT_CONTAINER_ENGINE = "docker"
@@ -153,7 +155,7 @@ class File:
         self.creation_time = creation_time
         self.dir_name = dir_name
 
-    def to_json(self):
+    def to_json(self, prov_dir):
         entity_value = self.g.value(self.node, URIRef("https://w3id.org/cwl/prov#basename"))
         entity_detail = self.g.value(subject=self.node, predicate=PROV.specializationOf)
         hash_alg, hash_val = str(entity_detail).split(":")[3:5]
@@ -192,13 +194,13 @@ class Folder:
         key_entity_pair = list(self.g.subjects(PROV.pairEntity, subnode))[0]
         return list(self.g.objects(key_entity_pair, PROV.pairKey))[0].value
 
-    def to_json(self):
+    def to_json(self, prov_dir):
         contents = []
         for _entity in self.g.objects(self.node, PROV.hadMember):
             entity_types = list(self.g.objects(_entity, RDF.type))
             if URIRef("http://purl.org/wf4ever/wf4ever#File") in entity_types:
                 _file = File(_entity, self.g, dir_name=self.dir_name)
-                contents.append(_file.to_json())
+                contents.append(_file.to_json(prov_dir))
             elif URIRef("http://purl.org/wf4ever/ro#Folder") in entity_types:
                 sub_dir_name = self._get_folder_name(_entity)
                 if self.dir_name:
@@ -210,7 +212,7 @@ class Folder:
                     if URIRef("http://purl.org/wf4ever/wf4ever#File") in sub_entity_types:
                         # input/output is a File
                         _file = File(_member_node, self.g, dir_name=dir_name)
-                        contents.append(_file.to_json())
+                        contents.append(_file.to_json(prov_dir))
                     elif URIRef("http://purl.org/wf4ever/ro#Folder") in sub_entity_types:
                         # input is a Directory
                         "http://www.openarchives.org/ore/terms/isDescribedBy"  # points to an external .ttl file with dir contents
@@ -218,7 +220,7 @@ class Folder:
                         "http://www.w3.org/ns/prov#hadMember"  # <--- use this
                         "http://www.w3.org/ns/prov#qualifiedGeneration"
                         _folder = Folder(_member_node, self.g, parent_dir_name=dir_name)
-                        contents.extend(_folder.to_json())
+                        contents.extend(_folder.to_json(prov_dir))
             else:
                 contents.append(
                     self.g.value(_entity, PROV.value).value
@@ -247,9 +249,10 @@ class Dictionary:
 
 class Stage:
 
-    def __init__(self, node, graph):
+    def __init__(self, node, graph, prov_dir):
         self.node = node
         self.g = graph
+        self.prov_dir = prov_dir
 
     def _get_folder_name(self, subnode):
         key_entity_pair = list(self.g.subjects(PROV.pairEntity, subnode))[0]
@@ -274,7 +277,7 @@ class Stage:
         if URIRef("http://purl.org/wf4ever/wf4ever#File") in entity_types:
             # input/output is a File
             _file = File(_entity, self.g, role=role, creation_time=creation_time)
-            collection.append(_file.to_json())
+            collection.append(_file.to_json(self.prov_dir))
         elif URIRef("http://purl.org/wf4ever/ro#Folder") in entity_types:
             # input is a Directory
             "http://www.openarchives.org/ore/terms/isDescribedBy"  # points to an external .ttl file with dir contents
@@ -284,11 +287,11 @@ class Stage:
             _folder = Folder(_entity, self.g)
             collection.append({
                 "role": role,
-                "contents": _folder.to_json()
+                "contents": _folder.to_json(self.prov_dir)
             })
         elif URIRef("http://www.w3.org/ns/prov#Dictionary") in entity_types:
             _dict = Dictionary(_entity, self.g, role=role)
-            collection.append(_dict.to_json())
+            collection.append(_dict.to_json(self.prov_dir))
         elif URIRef("http://www.w3.org/ns/prov#Collection") in entity_types:
             # input/output is a list
             contents = []
@@ -465,7 +468,7 @@ def get_prov_for_stage(stage, plan_usage, plan_implementation, container_engine=
                 if isinstance(item["value"], list):
                     for subitem in item["value"]:
                         _handle_output_item(subitem)
-                elif item["value"].startswith("http"):
+                elif isinstance(item["value"], str) and item["value"].startswith("http"):
                     outputs.append({
                         "location": item["value"]
                     })
@@ -565,69 +568,97 @@ def get_workflow_step(workflow_prospective, step_id):
     return None
 
 
+def upload_to_kg(filename, space):
+    token = os.environ["EBRAINS_AUTH_TOKEN"]
+    auth = {
+        "Authorization": f"Bearer {token}"
+    }
+    url = f"https://prov-api.apps.tc.humanbrainproject.eu/workflows/?space={space}"
+
+    with open(filename) as fp:
+        data = json.load(fp)
+
+    response = requests.post(url, json=data, headers=auth)
+    if response.status_code == 201:
+        print(f"Success. Workflow execution created with id {response.json()['id']}")
+    else:
+        print(f"Upload failed: {response.text}")
+
 
 # We load the following data from the CWL provenance record:
 #   - primary provenance document in JSON-LD format (as an rdflib RDF document)
 #   - workflow job parameters (as JSON)
 #   - workflow packed CWL file (as JSON)
+def main(prov_dir, container_engine, upload_workspace):
 
-prov_dir = sys.argv[1]
-if len(sys.argv) > 2:
-    container_engine = sys.argv[2]
-else:
-    container_engine = DEFAULT_CONTAINER_ENGINE
+    g = Graph()
+    g.parse(f"{prov_dir}/metadata/provenance/primary.cwlprov.jsonld")
 
-g = Graph()
-g.parse(f"{prov_dir}/metadata/provenance/primary.cwlprov.jsonld")
+    with open(f"{prov_dir}/workflow/primary-job.json") as fp:
+        job_config = json.load(fp)
 
-with open(f"{prov_dir}/workflow/primary-job.json") as fp:
-    job_config = json.load(fp)
+    if "token" in job_config:
+        job_config["token"] = "<MASKED SECRET>"
 
-if "token" in job_config:
-    job_config["token"] = "<MASKED SECRET>"
+    with open(f"{prov_dir}/workflow/packed.cwl") as fp:
+        packed_workflow = json.load(fp)
 
-with open(f"{prov_dir}/workflow/packed.cwl") as fp:
-    packed_workflow = json.load(fp)
+    workflow_stages_retrospective = g.subjects(RDF.type, URIRef("http://purl.org/wf4ever/wfprov#ProcessRun"))
+    wf_engine = list(g.subjects(RDF.type, URIRef("http://purl.org/wf4ever/wfprov#WorkflowEngine")))[0]
 
-workflow_stages_retrospective = g.subjects(RDF.type, URIRef("http://purl.org/wf4ever/wfprov#ProcessRun"))
-wf_engine = list(g.subjects(RDF.type, URIRef("http://purl.org/wf4ever/wfprov#WorkflowEngine")))[0]
+    # the following is fine for simple workflows, will need to be rewritten for nested workflows
+    if "$graph" in packed_workflow:
+        workflow_prospective = [item for item in packed_workflow["$graph"]
+                                if item["class"] == "Workflow"][0]
+        workflow_stages_prospective = {item["id"]: item for item in packed_workflow["$graph"]
+                                    if item["class"] == "CommandLineTool"}
+        #workflow_stages_prospective = [workflow_stages_prospective[step["run"]]
+        #                              for step in workflow_prospective["steps"]]
+    else:
+        assert packed_workflow["class"] == "CommandLineTool"
+        workflow_prospective = []
+        workflow_stages_prospective = {packed_workflow["id"]: packed_workflow}
 
-# the following is fine for simple workflows, will need to be rewritten for nested workflows
-if "$graph" in packed_workflow:
-    workflow_prospective = [item for item in packed_workflow["$graph"]
-                            if item["class"] == "Workflow"][0]
-    workflow_stages_prospective = {item["id"]: item for item in packed_workflow["$graph"]
-                                   if item["class"] == "CommandLineTool"}
-    #workflow_stages_prospective = [workflow_stages_prospective[step["run"]]
-    #                              for step in workflow_prospective["steps"]]
-else:
-    assert packed_workflow["class"] == "CommandLineTool"
-    workflow_prospective = []
-    workflow_stages_prospective = {packed_workflow["id"]: packed_workflow}
+    #breakpoint()
+    prov_report = {
+        "configuration": job_config,
+        "recipe_id": uuid_from_uri(
+            workflow_prospective.get("https://schema.org/identifier", None)
+        ),
+        "stages": []
+    }
 
-#breakpoint()
-prov_report = {
-    "configuration": job_config,
-    "recipe_id": uuid_from_uri(
-        workflow_prospective.get("https://schema.org/identifier", None)
-    ),
-    "stages": []
-}
+    for stage_node in workflow_stages_retrospective:
 
-for stage_node in workflow_stages_retrospective:
+        stage = Stage(stage_node, g, prov_dir)
+        workflow_step = get_workflow_step(workflow_prospective, stage.plan_id)
+        workflow_step_implementation_id = workflow_step["run"]
+        plan = workflow_stages_prospective[workflow_step_implementation_id]
 
-    stage = Stage(stage_node, g)
-    workflow_step = get_workflow_step(workflow_prospective, stage.plan_id)
-    workflow_step_implementation_id = workflow_step["run"]
-    plan = workflow_stages_prospective[workflow_step_implementation_id]
+        prov_for_stage = get_prov_for_stage(stage, workflow_step, plan, container_engine)
+        prov_report["stages"].append(prov_for_stage)
 
-    prov_for_stage = get_prov_for_stage(stage, workflow_step, plan, container_engine)
-    prov_report["stages"].append(prov_for_stage)
-
-add_file_locations(prov_report["stages"], prov_dir)
-prov_report["stages"] = sorted(prov_report["stages"], key=lambda s: s["start_time"])
+    add_file_locations(prov_report["stages"], prov_dir)
+    prov_report["stages"] = sorted(prov_report["stages"], key=lambda s: s["start_time"])
 
 
-with open(os.path.join(prov_dir, "ebrains_prov_generated.json"), "w") as fp:
-    json.dump(prov_report, fp, indent=2)
-    fp.write("\n")
+    output_file = os.path.join(prov_dir, "ebrains_prov_generated.json")
+    with open(output_file, "w") as fp:
+        json.dump(prov_report, fp, indent=2)
+        fp.write("\n")
+
+    if upload_workspace:
+        upload_to_kg(output_file, upload_workspace)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="convert_cwlprov_to_ebrains.py",
+        description="Upload workflow provenance metadata to EBRAINS",
+    )
+    parser.add_argument("--container-engine", default=DEFAULT_CONTAINER_ENGINE)
+    parser.add_argument("--upload", default=None)
+    parser.add_argument("prov_dir")
+
+    args = parser.parse_args()
+    main(args.prov_dir, args.container_engine, args.upload)

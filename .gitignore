@@ -1,14 +1,15 @@
 # folders
 .venv
 .vscode
+env
 
 # files
 # IGOR Pro Binary Wave Data format.
-*.ibw 
+*.ibw
 *.nix
 *.ns2
 # result files
-*.json 
+*.json
 *.npz
 *.pdf
 
