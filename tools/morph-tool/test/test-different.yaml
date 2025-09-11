@@ -1,0 +1,6 @@
+input_file_morph1: 
+  class: File
+  path: B95_Ch0_IDRest_107.ibw
+input_file_morph2:
+  class: File
+  path: B95_Ch3_IDRest_107.ibw
