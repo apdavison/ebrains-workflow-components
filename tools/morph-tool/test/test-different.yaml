@@ -1,6 +1,6 @@
 input_file_morph1: 
   class: File
-  path: B95_Ch0_IDRest_107.ibw
+  path: 2013_03_06_cell11_1125_H41_06.ASC
 input_file_morph2:
   class: File
-  path: B95_Ch3_IDRest_107.ibw
+  path: 2013_03_06_cell08_876_H41_05_Cell2.ASC
