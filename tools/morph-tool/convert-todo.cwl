@@ -65,7 +65,7 @@ inputs:
 
 
 outputs:
-  output_morph:
+  # output_morph:
     
 
   output_stdout:

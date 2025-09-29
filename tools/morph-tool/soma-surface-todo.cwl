@@ -2,9 +2,9 @@
 cwlVersion: v1.2
 
 ##### MORPH-TOOL #####
-##### Diff       #####
+##### Soma-Surface  #####
 class: CommandLineTool
-baseCommand: ["morph-tool", "diff"]
+baseCommand: ["morph-tool", "soma-surface"]
 
 stdout: stdout.txt
 stderr: stderr.txt
@@ -14,24 +14,18 @@ hints:
     dockerImageId: docker-registry.ebrains.eu/workflow-components/morph-tool
 
 doc:
-     - "Compare two morphologies"
-     - "0 if morphologies are the same, else 1."
+     - ""
      - "Detailed documentation: https://morph-tool.readthedocs.io/en/latest/#morphology-diffing"
 
-label: morph-tool-diff
+label: morph-tool-soma-surface
 
 # The inputs for this process.
 inputs:
-  input_file_morph1:
+  input_file:
     type: File
-    label: "First input morph file to compare with file2."
+    label: "input morph file"
     inputBinding:
       position: 3
-  input_file_morph2:
-    type: File
-    label: "Second input morph file to compare with file1."
-    inputBinding:
-      position: 4
 outputs:
   output_stdout:
     type: stdout
