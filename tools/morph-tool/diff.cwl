@@ -22,16 +22,46 @@ label: morph-tool-diff
 
 # The inputs for this process.
 inputs:
+
+  rtol:
+    type: float
+    label: "relative tolerance"
+    inputBinding:
+      position: 3
+      prefix: "--rtol"
+  
+  atol:
+    type: float
+    label: "absolute tolerance"
+    inputBinding:
+      position: 4
+      prefix: "--atol"
+
+  quiet:
+    type: boolean
+    label: "quiet"
+    inputBinding:
+      position: 5
+      prefix: "--quiet"
+
+  noquiet:
+    type: boolean
+    label: "no-quiet"
+    inputBinding:
+      position: 5
+      prefix: "--no-quiet"
+
   input_file_morph1:
     type: File
     label: "First input morph file to compare with file2."
     inputBinding:
-      position: 3
+      position: 6
   input_file_morph2:
     type: File
     label: "Second input morph file to compare with file1."
     inputBinding:
-      position: 4
+      position: 7
+      
 outputs:
   output_stdout:
     type: stdout
