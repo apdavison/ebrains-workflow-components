@@ -14,13 +14,28 @@ hints:
     dockerImageId: docker-registry.ebrains.eu/workflow-components/morph-tool
 
 doc:
-     - ""
-     - "Detailed documentation: https://morph-tool.readthedocs.io/en/latest/#morphology-diffing"
+     - "Get soma surface as computed by NEURON."
+     - "Detailed documentation: https://morph-tool.readthedocs.io/en/stable/index.html#soma-intricacies"
 
 label: morph-tool-soma-surface
 
 # The inputs for this process.
 inputs:
+  
+  quiet:
+    type: boolean
+    label: "quiet"
+    inputBinding:
+      position: 2
+      prefix: "--quiet"
+
+  noquiet:
+    type: boolean
+    label: "no-quiet"
+    inputBinding:
+      position: 2
+      prefix: "--no-quiet"
+
   input_file:
     type: File
     label: "input morph file"

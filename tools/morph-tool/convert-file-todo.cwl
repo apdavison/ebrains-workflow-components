@@ -4,7 +4,7 @@ cwlVersion: v1.2
 ##### MORPH-TOOL #####
 ##### Convert    #####
 class: CommandLineTool
-baseCommand: ["morph-tool", "convert"]
+baseCommand: ["morph-tool", "convert", "file"]
 
 stdout: stdout.txt
 stderr: stderr.txt
