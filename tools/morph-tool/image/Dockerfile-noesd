@@ -25,7 +25,8 @@
 
 
 # Bare OS image to run the installed executables
-FROM python:3.13
+# FROM python:3.13
+FROM python:3.9
 
 # RUN apt-get update && apt-get install -y gfortran
 

@@ -4,3 +4,29 @@ input_file_morph1:
 input_file_morph2:
   class: File
   path: 2013_03_06_cell08_876_H41_05_Cell2.ASC
+
+rtol: 0.02
+  
+atol: 0.01
+
+quiet: False
+
+noquiet: True
+  
+epsilon: 0.004
+
+output_file: output-test.SWC
+
+output_format: SWC
+
+nrn_order: True
+
+recenter: True
+
+single_point_soma: True
+
+sanitize: True
+  
+ensure_NRN_area: True
+
+ncores: 2
