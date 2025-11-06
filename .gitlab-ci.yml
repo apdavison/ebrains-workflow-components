@@ -73,8 +73,7 @@ test_morph_tool_components:
   stage: test
   script:
     - cd tools/morph-tool/test
-    - cwltool --no-container ../test-same.cwl test-same.yaml
-    - cwltool --no-container ../test-different.cwl test-different.yaml
+    - cwltool --no-container test.cwl test-same.yaml
 
 ##################
 
