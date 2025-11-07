@@ -25,8 +25,8 @@
 
 
 # Bare OS image to run the installed executables
-# FROM python:3.13
-FROM python:3.9
+FROM python:3.13
+# FROM python:3.9
 
 # RUN apt-get update && apt-get install -y gfortran
 
@@ -37,6 +37,9 @@ FROM python:3.9
 # COPY --from=builder /opt/views /opt/views
 
 RUN pip install morph-tool[all]
+
+# Patch morph-tool to make it compatible with python:3.13
+RUN sed -i "s@if section.perimeters:@if section.perimeters.size > 0:@g" /usr/local/lib/python3.13/site-packages/morph_tool/simplify.py
 
 RUN { \
       echo '#!/bin/sh' \
