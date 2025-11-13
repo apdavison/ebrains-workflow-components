@@ -36,7 +36,7 @@ FROM python:3.13
 # paths.view is a symlink, so copy the parent to avoid dereferencing and duplicating it
 # COPY --from=builder /opt/views /opt/views
 
-RUN pip install morph-tool[all]
+RUN pip install morph-tool[all] cwltool
 
 # Patch morph-tool to make it compatible with python:3.13
 RUN sed -i "s@if section.perimeters:@if section.perimeters.size > 0:@g" /usr/local/lib/python3.13/site-packages/morph_tool/simplify.py
