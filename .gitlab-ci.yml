@@ -46,6 +46,37 @@ test_bluepyefe_components:
     - cd tools/BluepyEfe/test
     - cwltool --no-container ../extract_ephys_features.cwl extract_ephys_features.yaml
 
+##################
+### Morph-Tool ###
+##################
+### Build ###
+build_morphtool_image:
+  stage: build
+  rules:
+    - changes:
+      - tools/morph-tool/image/Dockerfile-noesd
+      #- tools/morph-tool/image/requirements.txt
+  tags:
+    - shell-runner
+  script:
+    - cd tools/morph-tool/image
+    - docker build -f Dockerfile-noesd -t docker-registry.ebrains.eu/workflow-components/morph-tool .
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_SECRET docker-registry.ebrains.eu
+    - docker push docker-registry.ebrains.eu/workflow-components/morph-tool
+
+### Test ###
+
+test_morph_tool_components:
+  image: docker-registry.ebrains.eu/workflow-components/morph-tool
+  tags:
+    - docker-runner
+  stage: test
+  script:
+    - cd tools/morph-tool/test
+    - cwltool --no-container test.cwl test-same.yaml
+
+##################
+
 # test_elephant_components:
 #   image: docker-registry.ebrains.eu/workflow-components/elephant
 #   tags:
